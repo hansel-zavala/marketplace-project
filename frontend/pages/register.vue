@@ -1,0 +1,99 @@
+<template>
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Crear Cuenta</h2>
+      
+      <form @submit.prevent="handleRegister">
+        
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2">Nombre</label>
+            <input v-model="form.first_name" type="text" class="w-full px-3 py-2 border rounded-lg" required>
+          </div>
+          <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2">Apellido</label>
+            <input v-model="form.last_name" type="text" class="w-full px-3 py-2 border rounded-lg" required>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2">Correo Electrónico</label>
+          <input v-model="form.email" type="email" class="w-full px-3 py-2 border rounded-lg" required>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2">Teléfono</label>
+          <input v-model="form.phone" type="tel" class="w-full px-3 py-2 border rounded-lg">
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2">Soy...</label>
+          <select v-model="form.user_type" class="w-full px-3 py-2 border rounded-lg bg-white">
+            <option value="customer">Cliente (Busco servicios/productos)</option>
+            <option value="professional">Profesional (Ofrezco servicios)</option>
+            <option value="business">Negocio (Vendo productos)</option>
+          </select>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-gray-700 text-sm font-bold mb-2">Contraseña</label>
+          <input v-model="form.password" type="password" class="w-full px-3 py-2 border rounded-lg" required>
+        </div>
+
+        <div v-if="errorMsg" class="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm">
+          {{ errorMsg }}
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+          :disabled="loading"
+        >
+          {{ loading ? 'Registrando...' : 'Crear Cuenta' }}
+        </button>
+      </form>
+
+      <p class="mt-4 text-center text-sm text-gray-600">
+        ¿Ya tienes cuenta? <NuxtLink to="/login" class="text-blue-600 hover:underline">Inicia Sesión</NuxtLink>
+      </p>
+    </div>
+  </div>
+</template>
+
+<script setup>
+const config = useRuntimeConfig();
+const router = useRouter();
+console.log('URL del Backend:', config.public.apiBase);
+
+const form = reactive({
+  first_name: '',
+  last_name: '',
+  email: '',
+  phone: '',
+  user_type: 'customer',
+  password: ''
+});
+
+const loading = ref(false);
+const errorMsg = ref('');
+
+const handleRegister = async () => {
+  loading.value = true;
+  errorMsg.value = '';
+
+  try {
+    await $fetch(`${config.public.apiBase}/auth/register`, {
+      method: 'POST',
+      body: form
+    });
+
+    alert('Cuenta creada exitosamente. Por favor inicia sesión.');
+    router.push('/login');
+
+  } catch (error) {
+    errorMsg.value = error.data?.message || 'Error al registrar usuario';
+  } finally {
+    loading.value = false;
+  }
+};
+</script>

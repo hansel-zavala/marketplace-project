@@ -9,7 +9,12 @@ const create = async (userData) => {
     return await User.create(userData);
 };
 
+const findById = async (id) => {
+    return await User.findByPk(id);
+};
+
 module.exports = {
     findByEmail,
-    create
+    create,
+    findById
 };

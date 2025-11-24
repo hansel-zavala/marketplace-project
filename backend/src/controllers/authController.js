@@ -34,8 +34,11 @@ const login = async (req, res) => {
             user: {
                 uuid: user.uuid,
                 first_name: user.first_name,
+                last_name: user.last_name,
                 email: user.email,
-                user_type: user.user_type
+                user_type: user.user_type,
+                phone: user.phone,
+                created_at: user.created_at
             }
         });
     } catch (error) {

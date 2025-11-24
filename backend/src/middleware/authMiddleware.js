@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 const userRepository = require('../repositories/userRepository');
 
-const verifyToken = async (req, res, next) => {
+const auth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
@@ -24,7 +24,8 @@ const verifyToken = async (req, res, next) => {
       last_name: user.last_name,
       email: user.email,
       user_type: user.user_type,
-      phone: user.phone
+      phone: user.phone,
+      created_at: user.created_at
     };
 
     next();
@@ -41,5 +42,5 @@ const verifyToken = async (req, res, next) => {
 };
 
 module.exports = {
-  verifyToken
+  auth
 };

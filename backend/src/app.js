@@ -6,6 +6,7 @@ const morgan = require('morgan');
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const addressRoutes = require('./routes/addressRoutes');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/addresses', addressRoutes);
 
 app.use((err, req, res, next) => {
     console.error('Error:', err.message);

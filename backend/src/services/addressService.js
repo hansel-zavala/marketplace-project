@@ -29,7 +29,34 @@ const getUserAddresses = async (userUuid) => {
     return await addressRepository.findAllByUserId(user.id);
 };
 
+const updateAddress = async (userUuid, addressId, updateData) => {
+    const user = await userRepository.findByUuid(userUuid);
+    if (!user) throw new Error('Usuario no encontrado');
+
+    const address = await addressRepository.findByIdAndUserId(addressId, user.id);
+
+    if (!address) throw new Error('Dirección no encontrada');
+
+    if (updateData.is_default) {
+        await addressRepository.resetDefaults(user.id);
+    }
+
+    return await address.update(updateData);
+};
+
+const deleteAddress = async (userUuid, addressId) => {
+    const user = await userRepository.findByUuid(userUuid);
+    if (!user) throw new Error('Usuario no encontrado');
+
+    const address = await addressRepository.findByIdAndUserId(addressId, user.id);
+    if (!address) throw new Error('Dirección no encontrada o no autorizada');
+
+    return await addressRepository.deleteById(addressId);
+};
+
 module.exports = {
     addAddress,
-    getUserAddresses
+    getUserAddresses,
+    updateAddress,
+    deleteAddress
 };

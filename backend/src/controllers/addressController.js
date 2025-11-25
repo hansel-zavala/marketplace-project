@@ -29,7 +29,42 @@ const getMyAddresses = async (req, res) => {
     }
 };
 
+const updateAddress = async (req, res) => {
+    try {
+        const userUuid = req.user.uuid;
+        const { id } = req.params;
+        
+        const updatedAddress = await addressService.updateAddress(userUuid, id, req.body);
+
+        res.json({
+            message: 'Dirección actualizada correctamente',
+            address: updatedAddress
+        });
+    } catch (error) {
+        console.error(error);
+        const status = error.message === 'Dirección no encontrada' ? 404 : 500;
+        res.status(status).json({ message: error.message });
+    }
+};
+
+const deleteAddress = async (req, res) => {
+    try {
+        const userUuid = req.user.uuid;
+        const { id } = req.params;
+
+        await addressService.deleteAddress(userUuid, id);
+
+        res.json({ message: 'Dirección eliminada correctamente' });
+    } catch (error) {
+        console.error(error);
+        const status = error.message === 'Dirección no encontrada o no autorizada' ? 404 : 500;
+        res.status(status).json({ message: error.message });
+    }
+};
+
 module.exports = {
     createAddress,
-    getMyAddresses
+    getMyAddresses,
+    updateAddress,
+    deleteAddress
 };

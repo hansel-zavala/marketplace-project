@@ -23,9 +23,19 @@ const resetDefaults = async (userId) => {
     );
 };
 
+const findByIdAndUserId = async (id, userId) => {
+    return await Address.findOne({ where: { id, user_id: userId } });
+};
+
+const deleteById = async (id) => {
+    return await Address.destroy({ where: { id } });
+};
+
 module.exports = {
     create,
     findAllByUserId,
     countByUserId,
-    resetDefaults
+    resetDefaults,
+    findByIdAndUserId,
+    deleteById
 };

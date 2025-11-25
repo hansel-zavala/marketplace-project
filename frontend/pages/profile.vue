@@ -82,6 +82,14 @@
         <div class="bg-white p-6 rounded-lg shadow-md h-fit">
           <h3 class="font-bold text-gray-800 mb-4">Acciones</h3>
           <ul class="space-y-2">
+            <li>
+              <NuxtLink 
+                to="/addresses" 
+                class="block w-full text-left px-4 py-2 rounded hover:bg-gray-50 text-gray-600"
+              >
+                Mis Direcciones
+              </NuxtLink>
+            </li>
             <li class="border-t pt-2 mt-2">
               <button @click="handleLogout" class="w-full text-left px-4 py-2 rounded hover:bg-red-50 text-red-500 flex items-center gap-2">
                 <LogOut :size="18" /> Cerrar Sesión
@@ -105,18 +113,15 @@ const authStore = useAuthStore();
 const router = useRouter();
 const config = useRuntimeConfig();
 
-// Estado local para controlar el modo edición
 const isEditing = ref(false);
 const loading = ref(false);
 
-// Formulario reactivo
 const form = reactive({
   first_name: '',
   last_name: '',
   phone: ''
 });
 
-// Iniciar edición: Copiamos los datos del store al formulario
 const startEditing = () => {
   form.first_name = authStore.user.first_name;
   form.last_name = authStore.user.last_name;
@@ -131,14 +136,12 @@ const cancelEditing = () => {
 const saveChanges = async () => {
   loading.value = true;
   try {
-    // Petición al Backend
     const response = await $fetch(`${config.public.apiBase}/users/profile`, {
       method: 'PUT',
-      headers: { Authorization: `Bearer ${authStore.token}` }, // Importante: Enviar el token
+      headers: { Authorization: `Bearer ${authStore.token}` },
       body: form
     });
 
-    // Actualizar el Store con los nuevos datos
     authStore.user = response.user;
     
     alert('Perfil actualizado correctamente');

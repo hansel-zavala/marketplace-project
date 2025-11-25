@@ -29,7 +29,7 @@ const Address = sequelize.define('Address', {
         type: DataTypes.STRING(100),
         allowNull: false
     },
-    state: { // Departamento / Estado
+    state: {
         type: DataTypes.STRING(100),
         allowNull: false
     },
@@ -49,7 +49,9 @@ const Address = sequelize.define('Address', {
     tableName: 'user_addresses',
     timestamps: true,
     createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    updatedAt: 'updated_at',
+    paranoid: true,
+    deletedAt: 'deleted_at',
 });
 
 User.hasMany(Address, { foreignKey: 'user_id' });

@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -10,7 +11,9 @@ const addressRoutes = require('./routes/addressRoutes');
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 app.use(morgan('dev'));
 app.use(express.json());
 
@@ -26,6 +29,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/addresses', addressRoutes);
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use((err, req, res, next) => {
     console.error('Error:', err.message);

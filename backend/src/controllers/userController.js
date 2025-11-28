@@ -14,7 +14,9 @@ const updateProfile = async (req, res) => {
                 first_name: updatedUser.first_name,
                 last_name: updatedUser.last_name,
                 phone: updatedUser.phone,
-                user_type: updatedUser.user_type
+                user_type: updatedUser.user_type,
+                created_at: updatedUser.created_at,
+                profile_image: updatedUser.profile_image
             }
         });
 
@@ -25,6 +27,29 @@ const updateProfile = async (req, res) => {
     }
 };
 
+const uploadAvatar = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No se subió ninguna imagen' });
+        }
+
+        const userId = req.user.uuid;
+        const filePath = req.file.path.replace(/\\/g, '/');
+        await userService.updateUserAvatar(userId, filePath);
+
+        res.json({
+            message: 'Foto de perfil actualizada',
+            imageUrl: filePath
+        });
+
+    } catch (error) {
+        console.error(error);
+        const status = error.message === 'Usuario no encontrado' ? 404 : 500;
+        res.status(status).json({ message: error.message || 'Error al subir imagen' });
+    }
+};
+
 module.exports = {
-    updateProfile
+    updateProfile,
+    uploadAvatar
 };

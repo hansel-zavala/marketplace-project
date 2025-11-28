@@ -1,8 +1,8 @@
 <template>
   <header class="bg-white shadow-sm sticky top-0 z-50">
     <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
-      <NuxtLink
-        to="/"
+      <NuxtLink 
+        to="/" 
         class="flex items-center gap-2 text-2xl font-bold text-blue-600"
       >
         <Store :size="28" />
@@ -10,16 +10,18 @@
       </NuxtLink>
 
       <div class="flex items-center gap-6">
-        <NuxtLink
-          to="/products"
+        <NuxtLink 
+          to="/products" 
           class="text-gray-600 hover:text-blue-600 font-medium transition"
-          >Productos</NuxtLink
         >
-        <NuxtLink
-          to="/services"
+          Productos
+        </NuxtLink>
+        <NuxtLink 
+          to="/services" 
           class="text-gray-600 hover:text-blue-600 font-medium transition"
-          >Servicios</NuxtLink
         >
+          Servicios
+        </NuxtLink>
 
         <div
           v-if="authStore.user"
@@ -29,12 +31,18 @@
             to="/profile"
             class="flex items-center gap-2 text-gray-700 hover:text-blue-600 cursor-pointer transition"
           >
-            <div class="bg-blue-100 p-2 rounded-full">
-              <User :size="20" class="text-blue-600" />
+            <div
+              class="w-9 h-9 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center"
+            >
+              <img
+                v-if="authStore.user.profile_image"
+                :src="getAvatarUrl(authStore.user.profile_image)"
+                alt="Perfil"
+                class="w-full h-full object-cover"
+              />
+              <User v-else :size="18" class="text-gray-400" />
             </div>
-            <span class="text-sm font-medium">{{
-              authStore.user.first_name
-            }}</span>
+            <span class="text-sm font-medium">{{ authStore.user.first_name }}</span>
           </NuxtLink>
 
           <button
@@ -47,8 +55,8 @@
         </div>
 
         <div v-else class="flex items-center gap-3 ml-4">
-          <NuxtLink
-            to="/login"
+          <NuxtLink 
+            to="/login" 
             class="text-gray-600 hover:text-blue-600 font-medium transition"
           >
             Ingresar
@@ -66,14 +74,23 @@
 </template>
 
 <script setup>
-import { useAuthStore } from "~/stores/auth";
-import { Store, User, LogOut } from "lucide-vue-next";
+  import { useAuthStore } from '~/stores/auth';
+  import { Store, User, LogOut } from 'lucide-vue-next';
 
-const authStore = useAuthStore();
-const router = useRouter();
+  const authStore = useAuthStore();
+  const router = useRouter();
+  const config = useRuntimeConfig();
 
-const handleLogout = () => {
-  authStore.logout();
-  router.push("/login");
-};
+  const getAvatarUrl = (path) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+
+    const baseUrl = config.public.apiBase.replace('/api', '');
+    return `${baseUrl}/${path}`;
+  };
+
+  const handleLogout = () => {
+    authStore.logout();
+    router.push('/login');
+  };
 </script>

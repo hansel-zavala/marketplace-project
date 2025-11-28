@@ -43,6 +43,10 @@ const User = sequelize.define('User', {
     phone: {
         type: DataTypes.STRING(20)
     },
+    profile_image: {
+        type: DataTypes.STRING(500),
+        allowNull: true
+    },
     status: {
         type: DataTypes.ENUM('active', 'suspended', 'deleted'),
         defaultValue: 'active'

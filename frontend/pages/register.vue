@@ -61,8 +61,12 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '~/stores/auth';
+
 const config = useRuntimeConfig();
 const router = useRouter();
+const authStore = useAuthStore();
+
 console.log('URL del Backend:', config.public.apiBase);
 
 const form = reactive({
@@ -82,16 +86,18 @@ const handleRegister = async () => {
   errorMsg.value = '';
 
   try {
-    await $fetch(`${config.public.apiBase}/auth/register`, {
-      method: 'POST',
-      body: form
-    });
+    const user = await authStore.register(form);
 
-    alert('Cuenta creada exitosamente. Por favor inicia sesión.');
-    router.push('/login');
+    if (user.user_type === 'professional') {
+      alert('¡Cuenta creada! Ahora configura tu perfil profesional.');
+      router.push('/professional'); 
+    } else {
+      alert('¡Bienvenido! Ya puedes empezar a explorar.');
+      router.push('/');
+    }
 
   } catch (error) {
-    errorMsg.value = error.data?.message || 'Error al registrar usuario';
+    errorMsg.value = typeof error === 'string' ? error : 'Error al registrar usuario';
   } finally {
     loading.value = false;
   }

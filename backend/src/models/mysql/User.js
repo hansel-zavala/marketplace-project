@@ -47,6 +47,14 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING(500),
         allowNull: true
     },
+    reset_code: {
+        type: DataTypes.STRING(6),
+        allowNull: true
+    },
+    reset_code_expires: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
     status: {
         type: DataTypes.ENUM('active', 'suspended', 'deleted'),
         defaultValue: 'active'

@@ -1,0 +1,15 @@
+const express = require('express');
+const router = express.Router();
+const professionalController = require('../controllers/professionalController');
+const { auth } = require('../middleware/authMiddleware');
+const { validateProfessionalProfile } = require('../validators/professionalValidator');
+const createUploader = require('../middleware/uploadMiddleware');
+const uploadDocument = createUploader('documents');
+
+router.use(auth);
+
+router.get('/me', professionalController.getMyProfile);
+router.post('/', validateProfessionalProfile, professionalController.updateProfile);
+router.post('/verification', uploadDocument.single('document'), professionalController.requestVerification);
+
+module.exports = router;

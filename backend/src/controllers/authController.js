@@ -3,14 +3,17 @@ const authService = require('../services/authService');
 
 const register = async (req, res) => {
     try {
-        const newUser = await authService.registerUser(req.body);
+        const { user, token } = await authService.registerUser(req.body);
 
         res.status(201).json({
             message: 'Usuario registrado exitosamente',
+            token,
             user: {
-                uuid: newUser.uuid,
-                email: newUser.email,
-                full_name: `${newUser.first_name} ${newUser.last_name}`
+                uuid: user.uuid,
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                user_type: user.user_type
             }
         });
     } catch (error) {
@@ -63,8 +66,34 @@ const getProfile = async (req, res) => {
     }
 };
 
+const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        await authService.requestPasswordReset(email);
+        
+        res.json({ message: 'Si el correo existe, se ha enviado un código.' });
+    } catch (error) {
+        console.error(error);
+        res.json({ message: 'Si el correo existe, se ha enviado un código.' });
+    }
+};
+
+const resetPassword = async (req, res) => {
+    try {
+        const { email, code, password } = req.body;
+        await authService.resetPassword(email, code, password);
+        
+        res.json({ message: 'Contraseña actualizada correctamente. Ya puedes iniciar sesión.' });
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ message: error.message || 'Error al restablecer contraseña' });
+    }
+};
+
 module.exports = {
     register,
     login,
-    getProfile
+    getProfile,
+    forgotPassword,
+    resetPassword
 };

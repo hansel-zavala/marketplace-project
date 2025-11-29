@@ -46,11 +46,29 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
+  const register = async (userData) => {
+    const config = useRuntimeConfig();
+    try {
+      const response = await $fetch(`${config.public.apiBase}/auth/register`, {
+        method: 'POST',
+        body: userData
+      });
+      
+      setSession(response.token, response.user);
+      
+      return response.user;
+    } catch (error) {
+      console.error(error);
+      throw error.data?.message || 'Error al registrar usuario';
+    }
+  };
+
   return {
     token,
     user,
     login,
     logout,
-    fetchUser
+    fetchUser,
+    register
   };
 });

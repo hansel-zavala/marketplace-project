@@ -22,14 +22,24 @@
           <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
             Contraseña
           </label>
-          <input 
-            v-model="form.password"
-            id="password" 
-            type="password" 
-            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="********"
-            required
-          >
+          <div class="relative">
+            <input 
+              v-model="form.password"
+              id="password" 
+              :type="showPassword ? 'text' : 'password'" 
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+              placeholder="********"
+              required
+            >
+            <button 
+              type="button"
+              @click="showPassword = !showPassword"
+              class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 focus:outline-none"
+            >
+              <Eye v-if="!showPassword" :size="20" />
+              <EyeOff v-else :size="20" />
+            </button>
+          </div>
         </div>
 
         <div v-if="errorMsg" class="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm border border-red-200">
@@ -41,12 +51,17 @@
           class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition flex justify-center items-center gap-2"
           :disabled="loading"
         >
-          <span v-if="loading" class="animate-spin"></span>
+          <Loader2 v-if="loading" class="animate-spin" :size="20" />
           {{ loading ? 'Ingresando...' : 'Iniciar Sesión' }}
         </button>
       </form>
 
-      <div class="mt-6 text-center text-sm">
+      <div class="mt-6 text-center text-sm space-y-2">
+        <p class="text-gray-600">
+          <NuxtLink to="/forgot-password" class="text-blue-600 hover:underline">
+            ¿Olvidaste tu contraseña?
+          </NuxtLink>
+        </p>
         <p class="text-gray-600">
           ¿No tienes cuenta? 
           <NuxtLink to="/register" class="text-blue-600 hover:underline font-medium">
@@ -59,33 +74,35 @@
 </template>
 
 <script setup>
-import { useAuthStore } from '~/stores/auth';
+  import { useAuthStore } from '~/stores/auth';
+  import { Eye, EyeOff, Loader2 } from 'lucide-vue-next';
 
-const authStore = useAuthStore();
-const router = useRouter();
+  const authStore = useAuthStore();
+  const router = useRouter();
 
-const form = reactive({
-  email: '',
-  password: ''
-});
+  const form = reactive({
+    email: '',
+    password: '',
+  });
 
-const loading = ref(false);
-const errorMsg = ref('');
+  const loading = ref(false);
+  const errorMsg = ref('');
+  const showPassword = ref(false);
 
-const handleLogin = async () => {
-  loading.value = true;
-  errorMsg.value = '';
+  const handleLogin = async () => {
+    loading.value = true;
+    errorMsg.value = '';
 
-  try {
-    await authStore.login(form.email, form.password);
-    
-    router.push('/');
-    
-  } catch (error) {
-    console.error(error);
-    errorMsg.value = typeof error === 'string' ? error : 'Credenciales incorrectas o error de conexión';
-  } finally {
-    loading.value = false;
-  }
-};
+    try {
+      await authStore.login(form.email, form.password);
+
+      router.push('/');
+    } catch (error) {
+      console.error(error);
+      errorMsg.value =
+        typeof error === 'string' ? error : 'Credenciales incorrectas o error de conexión';
+    } finally {
+      loading.value = false;
+    }
+  };
 </script>

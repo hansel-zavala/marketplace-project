@@ -143,6 +143,19 @@
           <ul class="space-y-2">
             <li>
               <NuxtLink
+                to="/professional"
+                class="block w-full text-left px-4 py-2 rounded hover:bg-gray-50 text-gray-600 transition"
+              >
+                <Briefcase :size="18" />
+                {{
+                  authStore.user?.user_type === 'professional'
+                    ? 'Panel Profesional'
+                    : 'Conviértete en Profesional'
+                }}
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
                 to="/addresses"
                 class="block w-full text-left px-4 py-2 rounded hover:bg-gray-50 text-gray-600 transition"
               >
@@ -196,7 +209,6 @@
     password: '',
     profile_image: '',
   });
-
 
   const triggerFileInput = () => {
     fileInput.value.click();

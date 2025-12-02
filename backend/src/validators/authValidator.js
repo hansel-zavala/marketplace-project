@@ -56,4 +56,20 @@ const validateResetPassword = [
     (req, res, next) => validationMiddleware(req, res, next)
 ];
 
-module.exports = { validateRegister, validateLogin, validateForgotPassword, validateResetPassword };
+const validateChangePassword = [
+    body('currentPassword')
+        .notEmpty().withMessage('La contraseña actual es obligatoria'),
+    
+    body('newPassword')
+        .isLength({ min: 6 }).withMessage('La nueva contraseña debe tener al menos 6 caracteres')
+        .custom((value, { req }) => {
+            if (value === req.body.currentPassword) {
+                throw new Error('La nueva contraseña no puede ser igual a la actual');
+            }
+            return true;
+        }),
+
+    (req, res, next) => validationMiddleware(req, res, next)
+];
+
+module.exports = { validateRegister, validateLogin, validateForgotPassword, validateResetPassword, validateChangePassword };

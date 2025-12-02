@@ -96,9 +96,27 @@ const resetPassword = async (email, code, newPassword) => {
     return true;
 };
 
+const changePassword = async (userId, currentPassword, newPassword) => {
+    const user = await userRepository.findById(userId);
+    if (!user) throw new Error('Usuario no encontrado');
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
+    if (!isMatch) {
+        throw new Error('La contraseña actual es incorrecta');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const newPasswordHash = await bcrypt.hash(newPassword, salt);
+
+    await userRepository.update(user, { password_hash: newPasswordHash });
+    
+    return true;
+};
+
 module.exports = {
     registerUser,
     loginUser,
     requestPasswordReset,
-    resetPassword
+    resetPassword,
+    changePassword
 };

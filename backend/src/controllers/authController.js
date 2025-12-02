@@ -90,10 +90,26 @@ const resetPassword = async (req, res) => {
     }
 };
 
+const changePassword = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { currentPassword, newPassword } = req.body;
+
+        await authService.changePassword(userId, currentPassword, newPassword);
+
+        res.json({ message: 'Contraseña actualizada correctamente' });
+    } catch (error) {
+        console.error(error);
+        const status = error.message === 'La contraseña actual es incorrecta' ? 400 : 500;
+        res.status(status).json({ message: error.message || 'Error al cambiar contraseña' });
+    }
+};
+
 module.exports = {
     register,
     login,
     getProfile,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    changePassword
 };

@@ -1,4 +1,5 @@
 const Professional = require('../models/mysql/Professional');
+const User = require('../models/mysql/User');
 
 const create = async (data) => {
     return await Professional.create(data);
@@ -12,4 +13,13 @@ const update = async (professional, data) => {
     return await professional.update(data);
 };
 
-module.exports = { create, findByUserId, update };
+const findByIdWithUser = async (id) => {
+    return await Professional.findByPk(id, {
+        include: [{
+            model: User,
+            attributes: ['first_name', 'last_name', 'profile_image', 'email', 'phone', 'created_at']
+        }]
+    });
+};
+
+module.exports = { create, findByUserId, update, findByIdWithUser };

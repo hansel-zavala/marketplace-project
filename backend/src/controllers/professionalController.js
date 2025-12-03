@@ -56,4 +56,20 @@ const requestVerification = async (req, res) => {
     }
 };
 
-module.exports = { updateProfile, getMyProfile, requestVerification };
+const getPublicProfile = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const profile = await professionalService.getPublicProfileById(id);
+        
+        if (!profile) {
+            return res.status(404).json({ message: 'Profesional no encontrado' });
+        }
+
+        res.json(profile);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al obtener perfil público' });
+    }
+};
+
+module.exports = { updateProfile, getMyProfile, requestVerification, getPublicProfile };

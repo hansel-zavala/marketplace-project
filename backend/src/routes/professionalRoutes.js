@@ -6,10 +6,11 @@ const { validateProfessionalProfile } = require('../validators/professionalValid
 const createUploader = require('../middleware/uploadMiddleware');
 const uploadDocument = createUploader('documents');
 
-router.use(auth);
+// router.use(auth);
 
-router.get('/me', professionalController.getMyProfile);
-router.post('/', validateProfessionalProfile, professionalController.updateProfile);
-router.post('/verification', uploadDocument.single('document'), professionalController.requestVerification);
+router.get('/me', auth, professionalController.getMyProfile);
+router.get('/:id', professionalController.getPublicProfile);
+router.post('/', validateProfessionalProfile, auth, professionalController.updateProfile);
+router.post('/verification', uploadDocument.single('document'), auth, professionalController.requestVerification);
 
 module.exports = router;

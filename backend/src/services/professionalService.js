@@ -37,4 +37,9 @@ const getProfile = async (userUuid) => {
     return await professionalRepository.findByUserId(user.id);
 };
 
-module.exports = { upsertProfile, getProfile, submitVerification };
+const getPublicProfileById = async (id) => {
+    const profile = await professionalRepository.findByIdWithUser(id);
+    return profile;
+};  
+
+module.exports = { upsertProfile, getProfile, submitVerification, getPublicProfileById };

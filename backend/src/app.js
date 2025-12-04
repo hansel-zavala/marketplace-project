@@ -12,6 +12,7 @@ const professionalRoutes = require('./routes/professionalRoutes');
 const portfolioRoutes = require('./routes/portfolioRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const businessRoutes = require('./routes/businessRoutes');
+const productRoutes = require('./routes/productRoutes');
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/api/professionals', professionalRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/businesses', businessRoutes);
+app.use('/api/products', productRoutes);
 
 app.use((err, req, res, next) => {
     console.error('Error:', err.message);

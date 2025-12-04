@@ -32,8 +32,8 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
-  const fetchUser = async () => {
-    if (token.value && !user.value) {
+  const fetchUser = async (force = false) => {
+    if (token.value && (!user.value || force)) {
       const config = useRuntimeConfig();
       try {
         const response = await $fetch(`${config.public.apiBase}/auth/me`, {

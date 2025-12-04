@@ -176,7 +176,7 @@
       alert('Perfil profesional guardado correctamente');
 
       if (authStore.user.user_type === 'customer') {
-        authStore.fetchUser();
+        authStore.fetchUser(true);
       }
     } catch (error) {
       console.error(error);

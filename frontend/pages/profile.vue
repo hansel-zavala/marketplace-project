@@ -212,7 +212,7 @@
               >
                 <Briefcase :size="18" />
                 {{
-                  authStore.user?.user_type === 'professional'
+                  professionalProfile
                     ? 'Panel Profesional'
                     : 'Conviértete en Profesional'
                 }}
@@ -225,7 +225,7 @@
               >
                 <Store :size="18" />
                 {{
-                  authStore.user?.user_type === 'business'
+                  businessProfile
                     ? 'Panel de Negocio'
                     : 'Registrar mi Negocio'
                 }}
@@ -290,6 +290,7 @@
   const fileInput = ref(null);
 
   const professionalProfile = ref(null);
+  const businessProfile = ref(null);
 
   const form = reactive({
     first_name: '',
@@ -298,15 +299,22 @@
   });
 
   onMounted(async () => {
-    if (authStore.user?.user_type === 'professional' || authStore.user?.user_type === 'business') {
-      try {
-        const data = await $fetch(`${config.public.apiBase}/professionals/me`, {
-          headers: { Authorization: `Bearer ${authStore.token}` },
-        });
-        professionalProfile.value = data;
-      } catch (error) {
-        console.error('Error cargando perfil profesional:', error);
-      }
+    try {
+      const data = await $fetch(`${config.public.apiBase}/professionals/me`, {
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      });
+      professionalProfile.value = data;
+    } catch (error) {
+      if (error.statusCode !== 404) console.error('Error cargando perfil profesional:', error);
+    }
+
+    try {
+      const data = await $fetch(`${config.public.apiBase}/businesses/me`, {
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      });
+      businessProfile.value = data;
+    } catch (error) {
+      if (error.statusCode !== 404) console.error('Error cargando perfil de negocio:', error);
     }
   });
 

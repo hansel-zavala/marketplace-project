@@ -13,14 +13,13 @@ const uploadFields = uploadBusiness.fields([
     { name: 'cover', maxCount: 1 }
 ]);
 
+router.get('/me', auth, businessController.getMyBusiness);
+
 router.get('/:id', businessController.getPublicBusiness);
-
-router.use(auth);
-
-router.get('/me', businessController.getMyBusiness);
 
 router.post(
     '/', 
+    auth,
     uploadFields,
     validateBusiness,
     businessController.updateBusiness

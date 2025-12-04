@@ -34,7 +34,8 @@ const uploadAvatar = async (req, res) => {
         }
 
         const userId = req.user.uuid;
-        const filePath = req.file.path.replace(/\\/g, '/');
+        const filePath = `uploads/profiles/${req.file.filename}`;
+        
         await userService.updateUserAvatar(userId, filePath);
 
         res.json({

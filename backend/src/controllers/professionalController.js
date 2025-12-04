@@ -1,4 +1,5 @@
 const professionalService = require('../services/professionalService');
+const emailService = require('../services/emailService');
 
 const updateProfile = async (req, res) => {
     try {
@@ -72,4 +73,36 @@ const getPublicProfile = async (req, res) => {
     }
 };
 
-module.exports = { updateProfile, getMyProfile, requestVerification, getPublicProfile };
+const contactProfessional = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, phone, message } = req.body;
+
+        const profile = await professionalService.getPublicProfileById(id);
+        if (!profile) {
+            return res.status(404).json({ message: 'Profesional no encontrado' });
+        }
+
+        const sent = await emailService.sendContactEmail(
+            profile.User.email, 
+            profile.User.first_name,
+            { name, email, phone, message }
+        );
+
+        if (!sent) throw new Error('Fallo al enviar el correo');
+
+        res.json({ message: 'Mensaje enviado correctamente' });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al enviar el mensaje' });
+    }
+};
+
+module.exports = { 
+    updateProfile, 
+    getMyProfile, 
+    requestVerification, 
+    getPublicProfile, 
+    contactProfessional 
+};

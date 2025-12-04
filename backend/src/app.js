@@ -10,6 +10,8 @@ const userRoutes = require('./routes/userRoutes');
 const addressRoutes = require('./routes/addressRoutes');
 const professionalRoutes = require('./routes/professionalRoutes');
 const portfolioRoutes = require('./routes/portfolioRoutes');
+const searchRoutes = require('./routes/searchRoutes');
+const businessRoutes = require('./routes/businessRoutes');
 
 const app = express();
 
@@ -34,6 +36,8 @@ app.use('/api/addresses', addressRoutes);
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api/professionals', professionalRoutes);
 app.use('/api/portfolio', portfolioRoutes);
+app.use('/api/search', searchRoutes);
+app.use('/api/businesses', businessRoutes);
 
 app.use((err, req, res, next) => {
     console.error('Error:', err.message);

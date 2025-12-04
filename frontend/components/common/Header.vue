@@ -86,7 +86,7 @@
     if (path.startsWith('http')) return path;
 
     const baseUrl = config.public.apiBase.replace('/api', '');
-    return `${baseUrl}/${path}`;
+    return `${baseUrl}/${path.replace(/\\/g, '/')}`;
   };
 
   const handleLogout = () => {

@@ -1,5 +1,6 @@
 const Professional = require('../models/mysql/Professional');
 const User = require('../models/mysql/User');
+const { Op } = require('sequelize');
 
 const create = async (data) => {
     return await Professional.create(data);
@@ -22,4 +23,36 @@ const findByIdWithUser = async (id) => {
     });
 };
 
-module.exports = { create, findByUserId, update, findByIdWithUser };
+const search = async (query) => {
+    return await Professional.findAll({
+        where: {
+            [Op.or]: [
+                { profession: { [Op.like]: `%${query}%` } },
+                { bio: { [Op.like]: `%${query}%` } }
+            ],
+        },
+        include: [{
+            model: User,
+            attributes: ['first_name', 'last_name', 'profile_image', 'email']
+        }]
+    });
+};
+
+const findAll = async () => {
+    return await Professional.findAll({
+        include: [{
+            model: User,
+            attributes: ['first_name', 'last_name', 'profile_image', 'email']
+        }],
+        order: [['created_at', 'DESC']]
+    });
+};
+
+module.exports = { 
+    create, 
+    findByUserId, 
+    update, 
+    findByIdWithUser,
+    search,
+    findAll
+};

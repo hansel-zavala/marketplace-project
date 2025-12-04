@@ -1,0 +1,58 @@
+// backend/src/services/businessService.js
+const businessRepository = require('../repositories/businessRepository');
+const userRepository = require('../repositories/userRepository');
+
+const upsertBusiness = async (userUuid, data, files) => {
+    const user = await userRepository.findByUuid(userUuid);
+    if (!user) throw new Error('Usuario no encontrado');
+
+    let business = await businessRepository.findByUserId(user.id);
+
+    const businessData = { ...data };
+    
+    if (files?.logo?.[0]) {
+        businessData.logo = `uploads/businesses/${files.logo[0].filename}`;
+    }
+    
+    if (files?.cover?.[0]) {
+        businessData.cover_image = `uploads/businesses/${files.cover[0].filename}`;
+    }
+
+    if (typeof businessData.business_hours === 'string') {
+        try {
+            businessData.business_hours = JSON.parse(businessData.business_hours);
+        } catch (e) {
+            delete businessData.business_hours;
+        }
+    }
+
+    if (business) {
+        return await businessRepository.update(business, businessData);
+    } else {
+        if (user.user_type !== 'business') {
+            await userRepository.update(user, { user_type: 'business' });
+        }
+
+        return await businessRepository.create({
+            ...businessData,
+            user_id: user.id
+        });
+    }
+};
+
+const getMyBusiness = async (userUuid) => {
+    const user = await userRepository.findByUuid(userUuid);
+    if (!user) throw new Error('Usuario no encontrado');
+    
+    return await businessRepository.findByUserId(user.id);
+};
+
+const getBusinessById = async (id) => {
+    return await businessRepository.findById(id);
+};
+
+module.exports = {
+    upsertBusiness,
+    getMyBusiness,
+    getBusinessById
+};

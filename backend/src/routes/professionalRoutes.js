@@ -10,6 +10,7 @@ const uploadDocument = createUploader('documents');
 
 router.get('/me', auth, professionalController.getMyProfile);
 router.get('/:id', professionalController.getPublicProfile);
+router.post('/:id/contact', professionalController.contactProfessional);
 router.post('/', validateProfessionalProfile, auth, professionalController.updateProfile);
 router.post('/verification', uploadDocument.single('document'), auth, professionalController.requestVerification);
 

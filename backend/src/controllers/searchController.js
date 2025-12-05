@@ -5,7 +5,7 @@ const search = async (req, res) => {
     try {
         const { q } = req.query; 
         
-        const results = await searchService.searchProfessionals(q);
+        const results = await searchService.searchAll(q);
         
         res.json(results);
     } catch (error) {

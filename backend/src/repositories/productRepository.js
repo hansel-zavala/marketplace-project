@@ -1,4 +1,5 @@
-// backend/src/repositories/productRepository.js
+// backend/src/repositories/productRepository.js\
+const { Op } = require('sequelize');
 const Product = require('../models/mysql/Product');
 const ProductImage = require('../models/mysql/ProductImage');
 
@@ -42,11 +43,27 @@ const addImages = async (imagesData) => {
     return await ProductImage.bulkCreate(imagesData);
 };
 
+const search = async (query) => {
+    return await Product.findAll({
+        where: {
+            status: 'active',
+            [Op.or]: [
+                { title: { [Op.like]: `%${query}%` } },
+                { description: { [Op.like]: `%${query}%` } },
+                { category: { [Op.like]: `%${query}%` } }
+            ]
+        },
+        include: [{ model: ProductImage, as: 'images' }],
+        limit: 20
+    });
+};
+
 module.exports = {
     create,
     findById,
     findBySeller,
     deleteById,
     update,
-    addImages
+    addImages,
+    search
 };

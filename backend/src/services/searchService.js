@@ -1,14 +1,23 @@
 // backend/src/services/searchService.js
 const professionalRepository = require('../repositories/professionalRepository');
+const productRepository = require('../repositories/productRepository');
 
-const searchProfessionals = async (query) => {
+const searchAll = async (query) => {
     if (!query || query.trim() === '') {
-        return await professionalRepository.findAll();
+        return { professionals: [], products: [] };
     }
     
-    return await professionalRepository.search(query);
+    const [professionals, products] = await Promise.all([
+        professionalRepository.search(query),
+        productRepository.search(query)
+    ]);
+
+    return {
+        professionals,
+        products
+    };
 };
 
 module.exports = {
-    searchProfessionals
+    searchAll
 };

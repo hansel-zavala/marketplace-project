@@ -8,6 +8,9 @@ const createUploader = require('../middleware/uploadMiddleware');
 
 const uploadProduct = createUploader('products');
 
+router.get('/business/:businessId', productController.getProductsByBusiness);
+router.get('/:id', productController.getOneProduct);
+
 router.use(auth);
 
 router.get('/me', productController.getMyProducts);
@@ -19,7 +22,7 @@ router.post(
     productController.createProduct
 );
 
-router.get('/:id', productController.getProductById);
+
 
 router.put(
     '/:id',

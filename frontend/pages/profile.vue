@@ -221,7 +221,7 @@
             <li>
               <NuxtLink
                 to="/business"
-                class="block w-full text-left px-4 py-2 rounded bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-medium transition flex items-center gap-2"
+                class="block w-full text-left px-4 py-2 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 font-medium transition flex items-center gap-2"
               >
                 <Store :size="18" />
                 {{
@@ -276,6 +276,7 @@
     BadgeCheck,
     Star,
     MapPin,
+    Store,
   } from 'lucide-vue-next';
 
   definePageMeta({ middleware: ['auth'] });

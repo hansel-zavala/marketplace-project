@@ -6,7 +6,7 @@
         class="flex items-center gap-2 text-2xl font-bold text-blue-600"
       >
         <Store :size="28" />
-        <span>Marketplace</span>
+        <span>MercaApp</span>
       </NuxtLink>
 
       <div class="flex items-center gap-6">

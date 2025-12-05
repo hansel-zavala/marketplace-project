@@ -117,10 +117,36 @@ const deleteProduct = async (userUuid, productId) => {
     return await productRepository.deleteById(productId);
 };
 
+const getProductsByBusiness = async (businessId) => {
+    const business = await businessRepository.findById(businessId);
+    if (!business) throw new Error('Negocio no encontrado');
+    
+    return await productRepository.findBySeller(businessId, 'business');
+};
+
+const getProductDetail = async (productId) => {
+    const product = await productRepository.findById(productId);
+    if (!product) return null;
+
+    let seller = null;
+    if (product.seller_type === 'business') {
+        seller = await businessRepository.findById(product.seller_id);
+    } else {
+        seller = await professionalRepository.findByIdWithUser(product.seller_id);
+    }
+
+    return {
+        ...product.toJSON(),
+        seller
+    };
+};
+
 module.exports = {
     createProduct,
     getMyProducts,
     getProductById,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getProductsByBusiness,
+    getProductDetail
 };

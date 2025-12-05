@@ -66,10 +66,42 @@ const deleteProduct = async (req, res) => {
     }
 };
 
+const getProductsByBusiness = async (req, res) => {
+    try {
+        const { businessId } = req.params;
+        const products = await productService.getProductsByBusiness(businessId);
+        res.json(products);
+    } catch (error) {
+        console.error(error);
+        if (error.message === 'Negocio no encontrado') {
+            return res.status(404).json({ message: error.message });
+        }
+        res.status(500).json({ message: 'Error al obtener productos' });
+    }
+};
+
+const getOneProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await productService.getProductDetail(id);
+
+        if (!product) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+
+        res.json(product);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al obtener el producto' });
+    }
+};
+
 module.exports = {
     createProduct,
     getMyProducts,
     getProductById,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getProductsByBusiness,
+    getOneProduct
 };

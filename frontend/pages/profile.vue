@@ -211,11 +211,7 @@
                 class="block w-full text-left px-4 py-2 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 font-medium transition flex items-center gap-2"
               >
                 <Briefcase :size="18" />
-                {{
-                  professionalProfile
-                    ? 'Panel Profesional'
-                    : 'Conviértete en Profesional'
-                }}
+                {{ professionalProfile ? 'Panel Profesional' : 'Conviértete en Profesional' }}
               </NuxtLink>
             </li>
             <li>
@@ -224,11 +220,7 @@
                 class="block w-full text-left px-4 py-2 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 font-medium transition flex items-center gap-2"
               >
                 <Store :size="18" />
-                {{
-                  businessProfile
-                    ? 'Panel de Negocio'
-                    : 'Registrar mi Negocio'
-                }}
+                {{ businessProfile ? 'Panel de Negocio' : 'Registrar mi Negocio' }}
               </NuxtLink>
             </li>
             <li>
@@ -245,6 +237,14 @@
                 class="block w-full text-left px-4 py-2 rounded hover:bg-gray-50 text-gray-600 transition flex items-center gap-2"
               >
                 <Key :size="18" /> Cambiar Contraseña
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
+                to="/requests"
+                class="block w-full text-left px-4 py-2 rounded hover:bg-gray-50 text-gray-600 transition flex items-center gap-2"
+              >
+                <ClipboardList :size="18" /> Mis Solicitudes Enviadas
               </NuxtLink>
             </li>
             <li class="border-t pt-2 mt-2">
@@ -277,6 +277,7 @@
     Star,
     MapPin,
     Store,
+    ClipboardList,
   } from 'lucide-vue-next';
 
   definePageMeta({ middleware: ['auth'] });

@@ -112,6 +112,24 @@
                 </div>
                 <ChevronRight :size="18" />
               </NuxtLink>
+              <NuxtLink
+                to="/professional/requests"
+                class="flex items-center justify-between p-3 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 transition mb-2"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="bg-white p-2 rounded text-blue-600 shadow-sm">
+                    <Inbox :size="20" />
+                  </div>
+                  <span class="font-medium">Solicitudes</span>
+                </div>
+                <div
+                  class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full"
+                  v-if="pendingCount > 0"
+                >
+                  {{ pendingCount }}
+                </div>
+                <ChevronRight :size="18" v-else />
+              </NuxtLink>
             </div>
           </div>
 

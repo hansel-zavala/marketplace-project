@@ -92,12 +92,14 @@
                     <Package :size="18" /> Gestión de Productos
                   </NuxtLink>
                 </li>
+
                 <li>
-                  <button
-                    class="w-full text-left p-3 rounded bg-gray-50 text-gray-400 cursor-not-allowed flex items-center gap-2"
+                  <NuxtLink
+                    to="/business/orders"
+                    class="block w-full text-left p-3 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition flex items-center gap-2"
                   >
-                    <ShoppingCart :size="18" /> Pedidos (Próximamente)
-                  </button>
+                    <ShoppingCart :size="18" /> Pedidos
+                  </NuxtLink>
                 </li>
               </ul>
             </div>

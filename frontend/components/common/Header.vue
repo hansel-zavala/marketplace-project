@@ -1,25 +1,16 @@
 <template>
   <header class="bg-white shadow-sm sticky top-0 z-50">
     <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
-      <NuxtLink 
-        to="/" 
-        class="flex items-center gap-2 text-2xl font-bold text-blue-600"
-      >
+      <NuxtLink to="/" class="flex items-center gap-2 text-2xl font-bold text-blue-600">
         <Store :size="28" />
         <span>MercaApp</span>
       </NuxtLink>
 
       <div class="flex items-center gap-6">
-        <NuxtLink 
-          to="/products" 
-          class="text-gray-600 hover:text-blue-600 font-medium transition"
-        >
+        <NuxtLink to="/products" class="text-gray-600 hover:text-blue-600 font-medium transition">
           Productos
         </NuxtLink>
-        <NuxtLink 
-          to="/services" 
-          class="text-gray-600 hover:text-blue-600 font-medium transition"
-        >
+        <NuxtLink to="/services" class="text-gray-600 hover:text-blue-600 font-medium transition">
           Servicios
         </NuxtLink>
 
@@ -55,10 +46,7 @@
         </div>
 
         <div v-else class="flex items-center gap-3 ml-4">
-          <NuxtLink 
-            to="/login" 
-            class="text-gray-600 hover:text-blue-600 font-medium transition"
-          >
+          <NuxtLink to="/login" class="text-gray-600 hover:text-blue-600 font-medium transition">
             Ingresar
           </NuxtLink>
           <NuxtLink
@@ -68,6 +56,15 @@
             Registro
           </NuxtLink>
         </div>
+        <NuxtLink to="/cart" class="relative text-gray-600 hover:text-blue-600 mr-4 transition">
+            <ShoppingCart :size="24" />
+            <span
+              v-if="cartStore.totalItems > 0"
+              class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-sm"
+            >
+              {{ cartStore.totalItems }}
+            </span>
+          </NuxtLink>
       </div>
     </nav>
   </header>
@@ -75,11 +72,13 @@
 
 <script setup>
   import { useAuthStore } from '~/stores/auth';
-  import { Store, User, LogOut } from 'lucide-vue-next';
+  import { useCartStore } from '~/stores/cart';
+  import { Store, User, LogOut, ShoppingCart } from 'lucide-vue-next';
 
   const authStore = useAuthStore();
   const router = useRouter();
   const config = useRuntimeConfig();
+  const cartStore = useCartStore();
 
   const getAvatarUrl = (path) => {
     if (!path) return '';

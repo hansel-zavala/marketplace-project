@@ -247,6 +247,14 @@
                 <ClipboardList :size="18" /> Mis Solicitudes Enviadas
               </NuxtLink>
             </li>
+            <li>
+              <NuxtLink
+                to="/orders"
+                class="block w-full text-left px-4 py-2 rounded hover:bg-gray-50 text-gray-600 transition flex items-center gap-2"
+              >
+                <ShoppingBag :size="18" /> Mis Pedidos
+              </NuxtLink>
+            </li>
             <li class="border-t pt-2 mt-2">
               <button
                 @click="handleLogout"
@@ -278,6 +286,7 @@
     MapPin,
     Store,
     ClipboardList,
+    ShoppingBag,
   } from 'lucide-vue-next';
 
   definePageMeta({ middleware: ['auth'] });

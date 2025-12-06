@@ -14,6 +14,7 @@ const searchRoutes = require('./routes/searchRoutes');
 const businessRoutes = require('./routes/businessRoutes');
 const productRoutes = require('./routes/productRoutes');
 const serviceRequestRoutes = require('./routes/serviceRequestRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use('/api/search', searchRoutes);
 app.use('/api/businesses', businessRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/service-requests', serviceRequestRoutes);
+app.use('/api/orders', orderRoutes);
 
 app.use((err, req, res, next) => {
     console.error('Error:', err.message);

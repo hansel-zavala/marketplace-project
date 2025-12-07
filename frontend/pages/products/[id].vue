@@ -178,6 +178,33 @@
                 </div>
               </NuxtLink>
             </div>
+            <div class="mt-12 border-t border-gray-100 pt-8">
+              <h3 class="font-bold text-gray-800 text-xl mb-6 flex items-center gap-2">
+                Opiniones de Clientes 
+                <span class="text-sm font-normal text-gray-500">({{ reviews.length }})</span>
+              </h3>
+
+              <div v-if="reviews.length === 0" class="text-gray-500 italic">
+                Nadie ha opinado sobre este producto aún.
+              </div>
+
+              <div v-else class="space-y-6">
+                <div v-for="review in reviews" :key="review.id" class="bg-gray-50 p-4 rounded-xl">
+                  
+                  <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center gap-2">
+                      <div class="font-bold text-gray-800 text-sm">
+                        {{ review.Author?.first_name }} {{ review.Author?.last_name }}
+                      </div>
+                      <span class="text-xs text-gray-400">• {{ formatDate(review.createdAt) }}</span>
+                    </div>
+                    <StarRating :model-value="review.rating" :read-only="true" :size="14" />
+                  </div>
+
+                  <p class="text-gray-600 text-sm">{{ review.comment }}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -188,6 +215,7 @@
 <script setup>
   import { Loader2, Package, MessageCircle, Store, User, ShoppingCart } from 'lucide-vue-next';
   import { useCartStore } from '@/stores/cart';
+  import StarRating from '~/components/common/StarRating.vue';
 
   const route = useRoute();
   const config = useRuntimeConfig();
@@ -196,6 +224,7 @@
   const product = ref(null);
   const selectedImage = ref(null);
   const quantity = ref(1);
+  const reviews = ref([]);
 
   const productId = route.params.id;
 
@@ -219,10 +248,16 @@
       if (data.images && data.images.length > 0) {
         selectedImage.value = data.images[0].image_url;
       }
+
+      const reviewsData = await $fetch(`${config.public.apiBase}/reviews/product/${productId}`);
+      reviews.value = reviewsData;
     } catch (error) {
-      console.error(error);
+      console.error(error); 
     } finally {
       loading.value = false;
     }
   });
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('es-HN', { year: 'numeric', month: 'short', day: 'numeric' });
+  };
 </script>

@@ -57,7 +57,7 @@ const getMyProducts = async (userUuid) => {
         return await productRepository.findBySeller(professional.id, 'professional');
     }
 
-    return [];
+    return await productRepository.findBySeller(user.id, 'user');
 };
 
 const getProductById = async (id) => {

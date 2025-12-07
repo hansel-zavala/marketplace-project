@@ -255,6 +255,14 @@
                 <ShoppingBag :size="18" /> Mis Pedidos
               </NuxtLink>
             </li>
+            <li>
+              <NuxtLink
+                to="/user/products"
+                class="block w-full text-left px-4 py-2 rounded hover:bg-green-50 text-green-700 transition flex items-center gap-2 font-medium"
+              >
+                <Tag :size="18" /> Vender mis Artículos
+              </NuxtLink>
+            </li>
             <li class="border-t pt-2 mt-2">
               <button
                 @click="handleLogout"
@@ -287,6 +295,7 @@
     Store,
     ClipboardList,
     ShoppingBag,
+    Tag,
   } from 'lucide-vue-next';
 
   definePageMeta({ middleware: ['auth'] });

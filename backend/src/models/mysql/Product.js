@@ -15,7 +15,7 @@ const Product = sequelize.define('Product', {
         allowNull: false
     },
     seller_type: {
-        type: DataTypes.ENUM('business', 'professional'),
+        type: DataTypes.ENUM('business', 'professional', 'user'),
         allowNull: false
     },
     title: {

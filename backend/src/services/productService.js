@@ -10,9 +10,8 @@ const createProduct = async (userUuid, data, files) => {
 
     let sellerId = null;
     let sellerType = null;
-
-    const business = await businessRepository.findByUserId(user.id);
     
+    const business = await businessRepository.findByUserId(user.id);
     if (business) {
         sellerId = business.id;
         sellerType = 'business';
@@ -22,7 +21,8 @@ const createProduct = async (userUuid, data, files) => {
             sellerId = professional.id;
             sellerType = 'professional';
         } else {
-            throw new Error('Debes tener un perfil de Negocio o Profesional para vender');
+            sellerId = user.id;
+            sellerType = 'user';
         }
     }
 

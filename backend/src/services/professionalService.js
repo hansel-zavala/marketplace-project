@@ -5,15 +5,22 @@ const upsertProfile = async (userUuid, data) => {
     const user = await userRepository.findByUuid(userUuid);
     if (!user) throw new Error('Usuario no encontrado');
 
+    const { phone, ...professionalData } = data;
+
+    // Update user phone if provided
+    if (phone) {
+        await userRepository.update(user, { phone });
+    }
+
     let professional = await professionalRepository.findByUserId(user.id);
 
     if (professional) {
-        return await professionalRepository.update(professional, data);
+        return await professionalRepository.update(professional, professionalData);
     } else {
         if (user.user_type === 'customer') {
             await userRepository.update(user, { user_type: 'professional' });
         }
-        return await professionalRepository.create({ ...data, user_id: user.id });
+        return await professionalRepository.create({ ...professionalData, user_id: user.id });
     }
 };
 

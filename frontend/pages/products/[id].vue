@@ -99,7 +99,7 @@
 
                 <div class="flex gap-3">
                   <button
-                    @click="cartStore.addItem(product, quantity)"
+                    @click="addToCart"
                     class="flex-1 bg-blue-600 text-white py-3 px-6 rounded-xl font-bold shadow-md hover:bg-blue-700 transition transform hover:-translate-y-1 flex items-center justify-center gap-2"
                   >
                     <ShoppingCart :size="20" />
@@ -215,11 +215,14 @@
 <script setup>
   import { Loader2, Package, MessageCircle, Store, User, ShoppingCart } from 'lucide-vue-next';
   import { useCartStore } from '@/stores/cart';
+  import { useAuthStore } from '@/stores/auth';
   import StarRating from '~/components/common/StarRating.vue';
 
   const route = useRoute();
   const config = useRuntimeConfig();
+  const router = useRouter();
   const cartStore = useCartStore();
+  const authStore = useAuthStore();
   const loading = ref(true);
   const product = ref(null);
   const selectedImage = ref(null);
@@ -257,6 +260,16 @@
       loading.value = false;
     }
   });
+
+  const addToCart = () => {
+    if (authStore.user && !authStore.user.phone) {
+        alert('⚠️ Para comprar, necesitamos tu número de teléfono. Por favor agrégalo en tu perfil.');
+        router.push('/profile?edit=true');
+        return;
+    }
+    cartStore.addItem(product.value, quantity.value);
+  };
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('es-HN', { year: 'numeric', month: 'short', day: 'numeric' });
   };

@@ -21,10 +21,7 @@
           <input v-model="form.email" type="email" class="w-full px-3 py-2 border rounded-lg" required>
         </div>
 
-        <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2">Teléfono</label>
-          <input v-model="form.phone" type="tel" class="w-full px-3 py-2 border rounded-lg">
-        </div>
+
 
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2">Soy...</label>
@@ -38,6 +35,13 @@
         <div class="mb-6">
           <label class="block text-gray-700 text-sm font-bold mb-2">Contraseña</label>
           <input v-model="form.password" type="password" class="w-full px-3 py-2 border rounded-lg" required>
+        </div>
+
+        <div class="mb-6 flex items-start gap-2">
+           <input v-model="acceptTerms" type="checkbox" id="terms" class="mt-1" required>
+           <label for="terms" class="text-sm text-gray-700">
+             Acepto los <span class="font-bold cursor-pointer hover:underline text-blue-600">Términos y Condiciones</span> y la <span class="font-bold cursor-pointer hover:underline text-blue-600">Política de Privacidad</span>.
+           </label>
         </div>
 
         <div v-if="errorMsg" class="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm">
@@ -73,15 +77,20 @@ const form = reactive({
   first_name: '',
   last_name: '',
   email: '',
-  phone: '',
   user_type: 'customer',
   password: ''
 });
 
+const acceptTerms = ref(false);
 const loading = ref(false);
 const errorMsg = ref('');
 
 const handleRegister = async () => {
+  if (!acceptTerms.value) {
+    errorMsg.value = 'Debes aceptar los términos y condiciones';
+    return;
+  }
+
   loading.value = true;
   errorMsg.value = '';
 

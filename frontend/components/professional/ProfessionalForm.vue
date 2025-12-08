@@ -14,6 +14,18 @@
     </div>
 
     <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono de Contacto <span class="text-red-500">*</span></label>
+      <input 
+        v-model="form.phone" 
+        type="tel" 
+        class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+        placeholder="Ej: 9999-9999"
+        required
+      >
+      <p class="text-xs text-gray-500 mt-1">Será visible para tus clientes.</p>
+    </div>
+
+    <div>
       <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de tu Negocio (Opcional)</label>
       <div class="relative">
         <Briefcase :size="18" class="absolute left-3 top-3 text-gray-400" />
@@ -98,19 +110,27 @@ const props = defineProps({
 
 const emit = defineEmits(['submit']);
 
-const form = reactive({
-  profession: '',
-  business_name: '',
-  hourly_rate: '',
-  service_radius: 10,
-  bio: ''
-});
+  import { useAuthStore } from '~/stores/auth';
+  const authStore = useAuthStore();
+  
+  const form = reactive({
+    profession: '',
+    business_name: '',
+    hourly_rate: '',
+    service_radius: 10,
+    phone: '',
+    bio: ''
+  });
 
-watchEffect(() => {
-  if (props.initialData) {
-    Object.assign(form, props.initialData);
-  }
-});
+  watchEffect(() => {
+    if (props.initialData) {
+      Object.assign(form, props.initialData);
+    }
+    // If phone is empty in initialData, try to get it from authStore
+    if (!form.phone && authStore.user?.phone) {
+      form.phone = authStore.user.phone;
+    }
+  });
 
 const handleSubmit = () => {
   emit('submit', { ...form });

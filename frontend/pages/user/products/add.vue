@@ -37,6 +37,13 @@ const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const saving = ref(false);
 
+onMounted(() => {
+  if (!authStore.user?.phone) {
+    alert('⚠️ Para vender artículos, necesitamos tu número de teléfono. Por favor agrégalo en tu perfil.');
+    router.push('/profile?edit=true');
+  }
+});
+
 const saveProduct = async ({ form, files }) => {
   saving.value = true;
   const formData = new FormData();

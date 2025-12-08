@@ -141,6 +141,10 @@ const getProductDetail = async (productId) => {
     };
 };
 
+const getAllProducts = async (limit) => {
+    return await productRepository.findAll(limit);
+};
+
 module.exports = {
     createProduct,
     getMyProducts,
@@ -148,5 +152,6 @@ module.exports = {
     updateProduct,
     deleteProduct,
     getProductsByBusiness,
-    getProductDetail
+    getProductDetail,
+    getAllProducts
 };

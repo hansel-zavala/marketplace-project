@@ -1,19 +1,22 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     
-    <div class="bg-blue-600 text-white py-24 relative overflow-hidden">
-      <div class="absolute top-0 left-0 w-full h-full bg-blue-600 opacity-50 pattern-grid-lg"></div>
+    <div class="bg-gradient-to-br from-blue-600 to-indigo-800 text-white py-24 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+         <div class="absolute right-0 top-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+         <div class="absolute left-0 bottom-0 w-72 h-72 bg-blue-300 rounded-full mix-blend-overlay filter blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
+      </div>
 
       <div class="container mx-auto px-4 text-center relative z-10">
-        <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-          Encuentra el profesional <br class="hidden md:block" /> ideal para tu proyecto
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
+          Todo lo que necesitas, <br class="hidden md:block" /> en un solo lugar.
         </h1>
-        <p class="text-xl mb-10 text-blue-100 max-w-2xl mx-auto">
-          Plomeros, Electricistas, Abogados y más. Expertos verificados listos para ayudarte.
+        <p class="text-xl mb-12 text-blue-100 max-w-2xl mx-auto font-light">
+          Desde profesionales expertos hasta los mejores productos locales. Todo al alcance de un clic.
         </p>
         
-        <form @submit.prevent="handleSearch" class="max-w-2xl mx-auto relative">
-          <div class="flex items-center bg-white rounded-full p-2 shadow-lg">
+        <form @submit.prevent="handleSearch" class="max-w-2xl mx-auto relative group">
+          <div class="flex items-center bg-white p-2 rounded-full shadow-2xl transition-transform transform group-hover:scale-[1.01]">
             <div class="pl-4 text-gray-400">
               <Search :size="24" />
             </div>
@@ -21,37 +24,134 @@
               v-model="searchQuery" 
               type="text" 
               class="flex-grow px-4 py-3 text-gray-700 bg-transparent outline-none placeholder-gray-400 text-lg"
-              placeholder="¿Qué servicio buscas? Ej: Electricista"
+              placeholder="¿Qué servicio o producto buscas?"
             >
             <button 
               type="submit" 
-              class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition duration-200 flex items-center gap-2"
+              class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition duration-200 flex items-center gap-2 shadow-md"
             >
               Buscar
             </button>
           </div>
         </form>
 
-        <div class="mt-6 flex flex-wrap justify-center gap-3 text-sm text-blue-200">
-          <span>Tendencias:</span>
-          <button @click="quickSearch('Electricista')" class="hover:text-white underline decoration-dotted">Electricista</button>
-          <button @click="quickSearch('Plomero')" class="hover:text-white underline decoration-dotted">Plomero</button>
-          <button @click="quickSearch('Jardinería')" class="hover:text-white underline decoration-dotted">Jardinería</button>
+        <div class="mt-8 flex flex-wrap justify-center gap-4 text-sm font-medium text-blue-200">
+          <span class="opacity-75">Tendencias:</span>
+          <button @click="quickSearch('Electricista')" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full transition flex items-center gap-1">
+            <Zap :size="14" /> Electricista
+          </button>
+          <button @click="quickSearch('Plomero')" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full transition flex items-center gap-1">
+            <Wrench :size="14" /> Plomero
+          </button>
+          <button @click="quickSearch('Jardinería')" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full transition flex items-center gap-1">
+            <Sprout :size="14" /> Jardinería
+          </button>
         </div>
       </div>
     </div>
 
-    <div class="container mx-auto px-4 py-12">
-       </div>
+    <div class="container mx-auto px-4 py-16 space-y-20">
+
+      <section v-if="!pendingProfessionals">
+        <div class="flex justify-between items-end mb-8">
+          <div>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Expertos Recomendados</h2>
+            <p class="text-gray-500 mt-2">Profesionales verificados listos para trabajar</p>
+          </div>
+          <NuxtLink to="/search?type=professional" class="text-blue-600 font-bold hover:underline flex items-center gap-1">
+            Ver todos <ArrowRight :size="18" />
+          </NuxtLink>
+        </div>
+
+        <div v-if="professionals?.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <ProfessionalCard 
+            v-for="prof in professionals.slice(0, 4)" 
+            :key="prof.id" 
+            :professional="prof" 
+          />
+        </div>
+        <div v-else class="text-center py-10 bg-white rounded-xl shadow-sm">
+          <p class="text-gray-500">No hay profesionales destacados en este momento.</p>
+        </div>
+      </section>
+
+      <section v-if="!pendingBusinesses">
+        <div class="flex justify-between items-end mb-8">
+          <div>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Tiendas Oficiales</h2>
+            <p class="text-gray-500 mt-2">Negocios locales con los mejores productos</p>
+          </div>
+          <NuxtLink to="/search?type=business" class="text-blue-600 font-bold hover:underline flex items-center gap-1">
+            Ver todas <ArrowRight :size="18" />
+          </NuxtLink>
+        </div>
+
+        <div v-if="businesses?.length > 0" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          <BusinessCard 
+            v-for="business in businesses.slice(0, 5)" 
+            :key="business.id" 
+            :business="business" 
+          />
+        </div>
+        <div v-else class="text-center py-10 bg-white rounded-xl shadow-sm">
+           <p class="text-gray-500">No hay tiendas registradas aún.</p>
+        </div>
+      </section>
+
+      <section v-if="!pendingProducts">
+        <div class="flex justify-between items-end mb-8">
+          <div>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Descubrimientos del Día</h2>
+            <p class="text-gray-500 mt-2">Artículos recientes a precios increíbles</p>
+          </div>
+          <NuxtLink to="/search?type=product" class="text-blue-600 font-bold hover:underline flex items-center gap-1">
+            Explorar Mercado <ArrowRight :size="18" />
+          </NuxtLink>
+        </div>
+
+        <div v-if="products?.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <ProductCard 
+            v-for="product in products.slice(0, 8)" 
+            :key="product.id" 
+            :product="product" 
+          />
+        </div>
+        <div v-else class="text-center py-10 bg-white rounded-xl shadow-sm">
+           <p class="text-gray-500">Aún no hay productos publicados.</p>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="bg-gray-900 text-white py-16 mt-12">
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold mb-6">¿Quieres ofrecer tus servicios o productos?</h2>
+        <p class="text-gray-400 mb-8 max-w-2xl mx-auto">Únete a nuestra comunidad de profesionales y vendedores. Es gratis crear tu cuenta y empezar a conectar con clientes.</p>
+        <div class="flex justify-center gap-4">
+          <NuxtLink to="/register" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-bold transition">
+            Registrarme Gratis
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
 
   </div>
 </template>
 
 <script setup>
-import { Search, ShoppingBag, Home, Monitor, BookOpen, Car } from 'lucide-vue-next';
+import { Search, ArrowRight, Zap, Wrench, Sprout } from 'lucide-vue-next';
+import ProductCard from '~/components/products/ProductCard.vue';
+import ProfessionalCard from '~/components/professional/ProfessionalCard.vue';
+import BusinessCard from '~/components/business/BusinessCard.vue'; 
 
 const router = useRouter();
+const config = useRuntimeConfig();
 const searchQuery = ref('');
+
+// Fetch Data
+const { data: professionals, pending: pendingProfessionals } = useFetch(`${config.public.apiBase}/professionals`);
+const { data: businesses, pending: pendingBusinesses } = useFetch(`${config.public.apiBase}/businesses`);
+const { data: products, pending: pendingProducts } = useFetch(`${config.public.apiBase}/products`);
 
 const handleSearch = () => {
   if (!searchQuery.value.trim()) return;

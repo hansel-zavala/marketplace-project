@@ -9,6 +9,7 @@ const uploadDocument = createUploader('documents');
 // router.use(auth);
 
 router.get('/me', auth, professionalController.getMyProfile);
+router.get('/', professionalController.getAllProfessionals);
 router.get('/:id', professionalController.getPublicProfile);
 router.post('/:id/contact', professionalController.contactProfessional);
 router.post('/', validateProfessionalProfile, auth, professionalController.updateProfile);

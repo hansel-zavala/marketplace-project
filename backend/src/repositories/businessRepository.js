@@ -17,9 +17,16 @@ const update = async (business, data) => {
     return await business.update(data);
 };
 
+const findAll = async () => {
+    return await Business.findAll({
+        order: [['created_at', 'DESC']]
+    });
+};
+
 module.exports = {
     create,
     findByUserId,
     findById,
-    update
+    update,
+    findAll
 };

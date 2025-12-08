@@ -6,11 +6,23 @@
         <span>MercaApp</span>
       </NuxtLink>
 
+      <div class="flex-1 max-w-xl mx-8 hidden md:block">
+        <form @submit.prevent="handleSearch" class="relative group">
+          <input 
+            v-model="searchQuery"
+            type="text" 
+            class="w-full bg-gray-100 border border-gray-200 text-gray-700 px-4 py-2 pl-10 rounded-full focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-100 transition"
+            placeholder="Buscar productos, servicios..."
+          />
+          <Search :size="18" class="absolute left-3 top-2.5 text-gray-400 group-hover:text-blue-500 transition" />
+        </form>
+      </div>
+
       <div class="flex items-center gap-6">
-        <NuxtLink to="/products" class="text-gray-600 hover:text-blue-600 font-medium transition">
+        <NuxtLink to="/products" class="text-gray-600 hover:text-blue-600 font-medium transition hidden lg:block">
           Productos
         </NuxtLink>
-        <NuxtLink to="/services" class="text-gray-600 hover:text-blue-600 font-medium transition">
+        <NuxtLink to="/services" class="text-gray-600 hover:text-blue-600 font-medium transition hidden lg:block">
           Servicios
         </NuxtLink>
 
@@ -73,12 +85,19 @@
 <script setup>
   import { useAuthStore } from '~/stores/auth';
   import { useCartStore } from '~/stores/cart';
-  import { Store, User, LogOut, ShoppingCart } from 'lucide-vue-next';
+  import { Store, User, LogOut, ShoppingCart, Search } from 'lucide-vue-next';
 
   const authStore = useAuthStore();
   const router = useRouter();
   const config = useRuntimeConfig();
   const cartStore = useCartStore();
+  
+  const searchQuery = ref('');
+
+  const handleSearch = () => {
+    if (!searchQuery.value.trim()) return;
+    router.push({ path: '/search', query: { q: searchQuery.value } });
+  };
 
   const getAvatarUrl = (path) => {
     if (!path) return '';

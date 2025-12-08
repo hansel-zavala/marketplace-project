@@ -48,8 +48,19 @@ const getPublicBusiness = async (req, res) => {
     }
 };
 
+const getAllBusinesses = async (req, res) => {
+    try {
+        const businesses = await businessService.getAllBusinesses();
+        res.json(businesses);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al obtener negocios' });
+    }
+};
+
 module.exports = {
     updateBusiness,
     getMyBusiness,
-    getPublicBusiness
+    getPublicBusiness,
+    getAllBusinesses
 };

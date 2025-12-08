@@ -51,8 +51,13 @@ const getBusinessById = async (id) => {
     return await businessRepository.findById(id);
 };
 
+const getAllBusinesses = async () => {
+    return await businessRepository.findAll();
+};
+
 module.exports = {
     upsertBusiness,
     getMyBusiness,
-    getBusinessById
+    getBusinessById,
+    getAllBusinesses
 };

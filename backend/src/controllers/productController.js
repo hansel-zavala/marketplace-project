@@ -96,6 +96,17 @@ const getOneProduct = async (req, res) => {
     }
 };
 
+const getAllProducts = async (req, res) => {
+    try {
+        const limit = req.query.limit ? parseInt(req.query.limit) : 20;
+        const products = await productService.getAllProducts(limit);
+        res.json(products);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al obtener productos' });
+    }
+};
+
 module.exports = {
     createProduct,
     getMyProducts,
@@ -103,5 +114,6 @@ module.exports = {
     updateProduct,
     deleteProduct,
     getProductsByBusiness,
-    getOneProduct
+    getOneProduct,
+    getAllProducts
 };

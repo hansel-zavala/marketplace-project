@@ -99,10 +99,21 @@ const contactProfessional = async (req, res) => {
     }
 };
 
+const getAllProfessionals = async (req, res) => {
+    try {
+        const professionals = await professionalService.getAllProfiles();
+        res.json(professionals);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al obtener profesionales' });
+    }
+};
+
 module.exports = { 
     updateProfile, 
     getMyProfile, 
     requestVerification, 
     getPublicProfile, 
-    contactProfessional 
+    contactProfessional,
+    getAllProfessionals
 };

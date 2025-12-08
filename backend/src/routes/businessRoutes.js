@@ -15,6 +15,7 @@ const uploadFields = uploadBusiness.fields([
 
 router.get('/me', auth, businessController.getMyBusiness);
 
+router.get('/', businessController.getAllBusinesses);
 router.get('/:id', businessController.getPublicBusiness);
 
 router.post(

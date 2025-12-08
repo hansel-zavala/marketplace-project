@@ -49,4 +49,8 @@ const getPublicProfileById = async (id) => {
     return profile;
 };  
 
-module.exports = { upsertProfile, getProfile, submitVerification, getPublicProfileById };
+const getAllProfiles = async () => {
+    return await professionalRepository.findAll();
+};
+
+module.exports = { upsertProfile, getProfile, submitVerification, getPublicProfileById, getAllProfiles };

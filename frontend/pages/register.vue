@@ -57,9 +57,7 @@
            </label>
         </div>
 
-        <div v-if="errorMsg" class="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm">
-          {{ errorMsg }}
-        </div>
+
 
         <button 
           type="submit" 
@@ -78,13 +76,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import { useAuthStore } from '~/stores/auth';
+import { useToastStore } from '~/stores/toast';
 import { Eye, EyeOff } from 'lucide-vue-next';
 
 const config = useRuntimeConfig();
 const router = useRouter();
 const authStore = useAuthStore();
+const toastStore = useToastStore();
 const showPassword = ref(false);
 
 console.log('URL del Backend:', config.public.apiBase);
@@ -99,30 +99,29 @@ const form = reactive({
 
 const acceptTerms = ref(false);
 const loading = ref(false);
-const errorMsg = ref('');
 
 const handleRegister = async () => {
   if (!acceptTerms.value) {
-    errorMsg.value = 'Debes aceptar los términos y condiciones';
+    toastStore.show('Debes aceptar los términos y condiciones', 'warning');
     return;
   }
 
   loading.value = true;
-  errorMsg.value = '';
 
   try {
     const user = await authStore.register(form);
 
     if (user.user_type === 'professional') {
-      alert('¡Cuenta creada! Ahora configura tu perfil profesional.');
+      toastStore.show('¡Cuenta creada! Ahora configura tu perfil profesional.', 'success');
       router.push('/professional'); 
     } else {
-      alert('¡Bienvenido! Ya puedes empezar a explorar.');
+      toastStore.show('¡Bienvenido! Ya puedes empezar a explorar.', 'success');
       router.push('/');
     }
 
   } catch (error) {
-    errorMsg.value = typeof error === 'string' ? error : 'Error al registrar usuario';
+    const msg = typeof error === 'string' ? error : 'Error al registrar usuario';
+    toastStore.show(msg, 'error');
   } finally {
     loading.value = false;
   }

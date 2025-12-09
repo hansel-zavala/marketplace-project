@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col">
+    <ToastContainer />
     <CommonHeader />
     <main class="flex-grow">
       <NuxtPage />
@@ -12,6 +13,7 @@
 
 <script setup>
 import { useAuthStore } from '~/stores/auth';
+import ToastContainer from '~/components/common/ToastContainer.vue';
 
 const authStore = useAuthStore();
 

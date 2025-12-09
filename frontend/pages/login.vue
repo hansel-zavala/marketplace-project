@@ -42,9 +42,7 @@
           </div>
         </div>
 
-        <div v-if="errorMsg" class="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm border border-red-200">
-          {{ errorMsg }}
-        </div>
+
 
         <button 
           type="submit" 
@@ -75,9 +73,11 @@
 
 <script setup>
   import { useAuthStore } from '~/stores/auth';
+  import { useToastStore } from '~/stores/toast';
   import { Eye, EyeOff, Loader2 } from 'lucide-vue-next';
 
   const authStore = useAuthStore();
+  const toastStore = useToastStore();
   const router = useRouter();
 
   const form = reactive({
@@ -86,21 +86,19 @@
   });
 
   const loading = ref(false);
-  const errorMsg = ref('');
   const showPassword = ref(false);
 
   const handleLogin = async () => {
     loading.value = true;
-    errorMsg.value = '';
 
     try {
       await authStore.login(form.email, form.password);
-
+      toastStore.show('Sesión iniciada correctamente', 'success');
       router.push('/');
     } catch (error) {
       console.error(error);
-      errorMsg.value =
-        typeof error === 'string' ? error : 'Credenciales incorrectas o error de conexión';
+      const msg = typeof error === 'string' ? error : 'Credenciales incorrectas o error de conexión';
+      toastStore.show(msg, 'error');
     } finally {
       loading.value = false;
     }

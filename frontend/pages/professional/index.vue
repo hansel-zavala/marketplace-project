@@ -160,12 +160,14 @@
 <script setup>
   import ProfessionalForm from '~/components/professional/ProfessionalForm.vue';
   import { useAuthStore } from '~/stores/auth';
+  import { useToastStore } from '~/stores/toast';
   import { Briefcase, BadgeCheck, ShieldAlert, Clock, Star, Loader2, User } from 'lucide-vue-next';
 
   definePageMeta({ middleware: ['auth'] });
 
   const config = useRuntimeConfig();
   const authStore = useAuthStore();
+  const toastStore = useToastStore();
   const router = useRouter();
 
   const fetching = ref(true);
@@ -182,6 +184,7 @@
     } catch (error) {
       if (error.statusCode !== 404) {
         console.error(error);
+        toastStore.show('Error al cargar perfil', 'error');
       }
     } finally {
       fetching.value = false;
@@ -198,14 +201,15 @@
       });
 
       profile.value = response.profile;
-      alert('Perfil profesional guardado correctamente');
+      toastStore.show('Perfil profesional guardado correctamente', 'success');
 
       if (authStore.user.user_type === 'customer') {
         authStore.fetchUser(true);
       }
     } catch (error) {
       console.error(error);
-      alert('Error: ' + (error.data?.message || error.message));
+      const msg = error.data?.message || error.message;
+      toastStore.show('Error: ' + msg, 'error');
     } finally {
       saving.value = false;
     }

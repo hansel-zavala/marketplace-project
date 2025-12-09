@@ -19,13 +19,6 @@
       </div>
 
       <div class="flex items-center gap-6">
-        <NuxtLink to="/products" class="text-gray-600 hover:text-blue-600 font-medium transition hidden lg:block">
-          Productos
-        </NuxtLink>
-        <NuxtLink to="/services" class="text-gray-600 hover:text-blue-600 font-medium transition hidden lg:block">
-          Servicios
-        </NuxtLink>
-
         <div
           v-if="authStore.user"
           class="flex items-center gap-4 ml-2 border-l pl-6 border-gray-200"

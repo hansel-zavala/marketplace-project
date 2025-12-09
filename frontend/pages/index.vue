@@ -122,7 +122,7 @@
 
     </div>
 
-    <div class="bg-gray-900 text-white py-16 mt-12">
+    <div v-if="!authStore.user" class="bg-gray-900 text-white py-16 mt-12">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl font-bold mb-6">¿Quieres ofrecer tus servicios o productos?</h2>
         <p class="text-gray-400 mb-8 max-w-2xl mx-auto">Únete a nuestra comunidad de profesionales y vendedores. Es gratis crear tu cuenta y empezar a conectar con clientes.</p>
@@ -142,9 +142,11 @@ import { Search, ArrowRight, Zap, Wrench, Sprout } from 'lucide-vue-next';
 import ProductCard from '~/components/products/ProductCard.vue';
 import ProfessionalCard from '~/components/professional/ProfessionalCard.vue';
 import BusinessCard from '~/components/business/BusinessCard.vue'; 
+import { useAuthStore } from '~/stores/auth'; 
 
 const router = useRouter();
 const config = useRuntimeConfig();
+const authStore = useAuthStore();
 const searchQuery = ref('');
 
 // Fetch Data

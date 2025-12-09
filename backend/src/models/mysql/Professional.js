@@ -37,9 +37,21 @@ const Professional = sequelize.define('Professional', {
         allowNull: false 
     },
     experience_years: { type: DataTypes.INTEGER, defaultValue: 0 },
-    hourly_rate: { type: DataTypes.DECIMAL(10, 2), defaultValue: 0.00 },
+    fee: { type: DataTypes.DECIMAL(10, 2), defaultValue: 0.00 },
+    billing_type: {
+        type: DataTypes.ENUM('hourly', 'daily', 'job'),
+        defaultValue: 'hourly'
+    },
+    department: { 
+        type: DataTypes.STRING(100),
+        allowNull: false
+    },
+    municipality: { 
+        type: DataTypes.STRING(100),
+        allowNull: false
+    },
     bio: { type: DataTypes.TEXT },
-    service_radius: { type: DataTypes.INTEGER, defaultValue: 10 },
+
     rating: { type: DataTypes.DECIMAL(3, 2), defaultValue: 0.00 },
     
     verified: { 

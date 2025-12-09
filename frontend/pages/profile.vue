@@ -159,10 +159,15 @@
                   </p>
                 </div>
                 <div class="text-right">
-                  <p class="text-xs text-gray-500 uppercase font-bold">Tarifa</p>
+                  <p v-if="professionalProfile.billing_type === 'hourly'" class="text-xs text-gray-500 uppercase font-bold">Tarifa por hora</p>
+                  <p v-else-if="professionalProfile.billing_type === 'daily'" class="text-xs text-gray-500 uppercase font-bold">Tarifa por dia</p>
+                  <p v-else-if="professionalProfile.billing_type === 'job'" class="text-xs text-gray-500 uppercase font-bold">Tarifa por trabajo</p>
+                  <p v-else class="text-xs text-gray-500 uppercase font-bold">Tarifa por {{ professionalProfile.billing_type }}</p>
                   <p class="text-lg font-bold text-gray-800">
-                    L. {{ professionalProfile.hourly_rate }}
-                    <span class="text-sm font-normal text-gray-500">/hr</span>
+                    L. {{ professionalProfile.fee }}
+                    <span v-if="professionalProfile.billing_type === 'hourly'" class="text-sm font-normal text-gray-500">/hr</span>
+                    <span v-if="professionalProfile.billing_type === 'daily'" class="text-sm font-normal text-gray-500">/dia</span>
+                    <span v-if="professionalProfile.billing_type === 'job'" class="text-sm font-normal text-gray-500">/trabajo</span>
                   </p>
                 </div>
               </div>
@@ -186,7 +191,7 @@
                 </div>
                 <div class="flex items-center gap-1">
                   <MapPin :size="16" />
-                  <span>{{ professionalProfile.service_radius }} km radio</span>
+                  <span>{{ professionalProfile.department }}, {{ professionalProfile.municipality }}</span>
                 </div>
               </div>
 
@@ -200,7 +205,82 @@
               </div>
             </div>
           </div>
+          <div
+            v-if="businessProfile"
+            class="bg-white rounded-lg shadow-md overflow-hidden border border-blue-100"
+          >
+            <div
+              class="bg-blue-50 px-6 py-3 border-b border-blue-100 flex justify-between items-center"
+            >
+              <h3 class="font-bold text-blue-800 flex items-center gap-2">
+                <Store :size="20" /> Perfil del Negocio
+              </h3>
+              <span
+                v-if="businessProfile.verification_status === 'verified'"
+                class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-bold flex items-center gap-1"
+              >
+                <BadgeCheck :size="14" /> Verificado
+              </span>
+              <span
+                v-else
+                class="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-full font-bold"
+              >
+                {{
+                  businessProfile.verification_status === 'pending'
+                    ? 'En Revisión'
+                    : 'No Verificado'
+                }}
+              </span>
+            </div>
+
+            <div class="p-6">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <h4 class="text-xl font-bold text-gray-800">
+                    {{ businessProfile.business_name }}
+                  </h4>
+                  <p v-if="businessProfile.business_name" class="text-gray-500 text-sm">
+                    {{ businessProfile.website }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                  {{ businessProfile.description || 'Sin biografía.' }}
+                </p>
+              </div>
+
+              <div class="flex items-center gap-6 text-sm text-gray-500 border-t pt-4">
+                <div class="flex items-center gap-1">
+                  <Star :size="16" class="text-yellow-400 fill-current" />
+                  <span class="font-bold text-gray-700">{{
+                    businessProfile.rating || '0.0'
+                  }}</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <Briefcase :size="16" />
+                  <span>{{ businessProfile.total_jobs || 0 }} Productos</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <MapPin :size="16" />
+                  <span>{{ businessProfile.address }}</span>
+                </div>
+              </div>
+
+              <div class="mt-6">
+                <NuxtLink
+                  to="/business"
+                  class="block w-full text-center border border-blue-600 text-blue-600 py-2 rounded-lg hover:bg-blue-50 font-medium transition"
+                >
+                  Gestionar Perfil Negocio
+                </NuxtLink>
+              </div>
+            </div>
+          </div>
         </div>
+
+        
 
         <div class="bg-white p-6 rounded-lg shadow-md h-fit">
           <h3 class="font-bold text-gray-800 mb-4">Acciones</h3>

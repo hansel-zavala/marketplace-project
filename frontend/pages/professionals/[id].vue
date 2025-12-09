@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-12">
+  <div class="min-h-screen bg-gray-100 py-12">
     
     <div v-if="loading" class="flex justify-center py-20 text-gray-500">
       <Loader2 class="animate-spin" :size="40" />
@@ -47,10 +47,18 @@
             </div>
 
             <div class="flex gap-8 text-center bg-gray-50 p-4 rounded-lg">
-              <div>
-                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Tarifa</p>
-                <p class="text-2xl font-bold text-gray-800">L. {{ professional.hourly_rate }}</p>
-              </div>
+              <div class="text-right">
+                  <p v-if="professional.billing_type === 'hourly'" class="text-xs text-gray-500 uppercase font-bold">Tarifa por hora</p>
+                  <p v-else-if="professional.billing_type === 'daily'" class="text-xs text-gray-500 uppercase font-bold">Tarifa por dia</p>
+                  <p v-else-if="professional.billing_type === 'job'" class="text-xs text-gray-500 uppercase font-bold">Tarifa por trabajo</p>
+                  <p v-else class="text-xs text-gray-500 uppercase font-bold">Tarifa por {{ professional.billing_type }}</p>
+                  <p class="text-lg font-bold text-gray-800">
+                    L. {{ professional.fee }}
+                    <span v-if="professional.billing_type === 'hourly'" class="text-sm font-normal text-gray-500">/hr</span>
+                    <span v-if="professional.billing_type === 'daily'" class="text-sm font-normal text-gray-500">/dia</span>
+                    <span v-if="professional.billing_type === 'job'" class="text-sm font-normal text-gray-500">/trabajo</span>
+                  </p>
+                </div>
               <div class="border-l border-gray-200 pl-8">
                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Calificación</p>
                 <div class="flex items-center justify-center gap-1">
@@ -78,7 +86,7 @@
             <ul class="space-y-4 text-gray-600">
               <li class="flex items-center gap-3">
                 <MapPin :size="20" class="text-gray-400" />
-                <span>Cobertura: <strong>{{ professional.service_radius }} km</strong></span>
+                <span>{{ professional.department }}, {{ professional.municipality }}</span>
               </li>
               <li class="flex items-center gap-3">
                 <Clock :size="20" class="text-gray-400" />

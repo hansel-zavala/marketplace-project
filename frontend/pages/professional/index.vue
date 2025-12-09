@@ -36,10 +36,16 @@
           </div>
           <div class="flex gap-2">
             <NuxtLink
+              :to="`/professionals/${profile.id}`"
+              class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 font-medium flex items-center gap-2 transition"
+            >
+              <ExternalLink :size="18" /> Ver como Cliente
+            </NuxtLink>
+            <NuxtLink
               to="/profile"
               class="text-gray-500 hover:text-gray-700 px-4 py-2 font-medium flex items-center gap-2"
             >
-              <User :size="18" /> Volver a Usuario
+              <User :size="18" /> Volver al Perfil
             </NuxtLink>
           </div>
         </div>
@@ -165,6 +171,7 @@
   const fetching = ref(true);
   const saving = ref(false);
   const profile = ref(null);
+  const profesional = ref(null);
 
   onMounted(async () => {
     try {

@@ -32,9 +32,22 @@
           </select>
         </div>
 
-        <div class="mb-6">
+        <div class="mb-6 relative">
           <label class="block text-gray-700 text-sm font-bold mb-2">Contraseña</label>
-          <input v-model="form.password" type="password" class="w-full px-3 py-2 border rounded-lg" required>
+          <input 
+            v-model="form.password" 
+            :type="showPassword ? 'text' : 'password'" 
+            class="w-full px-3 py-2 border rounded-lg pr-10" 
+            required
+          >
+          <button 
+              type="button"
+              @click="showPassword = !showPassword"
+              class="absolute right-3 top-9 text-gray-400 hover:text-gray-600 focus:outline-none"
+            >
+              <Eye v-if="!showPassword" :size="20" />
+              <EyeOff v-else :size="20" />
+            </button>
         </div>
 
         <div class="mb-6 flex items-start gap-2">
@@ -65,11 +78,14 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { useAuthStore } from '~/stores/auth';
+import { Eye, EyeOff } from 'lucide-vue-next';
 
 const config = useRuntimeConfig();
 const router = useRouter();
 const authStore = useAuthStore();
+const showPassword = ref(false);
 
 console.log('URL del Backend:', config.public.apiBase);
 

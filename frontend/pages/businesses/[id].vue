@@ -30,7 +30,7 @@
       <div class="container mx-auto px-4 relative -mt-20 z-10 mb-12">
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden pb-8">
           <div class="px-6 md:px-10">
-            <div class="flex flex-col md:flex-row items-start md:items-end gap-6 -mt-12 mb-6">
+            <div class="flex flex-col md:flex-row items-start md:items-end gap-6 mt-9 mb-6">
               <div
                 class="w-32 h-32 rounded-xl border-4 border-white bg-white shadow-md overflow-hidden flex items-center justify-center shrink-0"
               >
@@ -90,13 +90,13 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
               <div class="space-y-6">
                 <div class="prose prose-sm text-gray-600">
-                  <h3 class="text-gray-800 font-bold text-lg mb-2">Sobre Nosotros</h3>
-                  <p>{{ business.description || 'Sin descripción disponible.' }}</p>
+                  <h3 class="text-gray-800 font-bold text-xl mb-2">Sobre Nosotros</h3>
+                  <p class="text-lg">{{ business.description || 'Sin descripción disponible.' }}</p>
                 </div>
 
                 <div class="border-t border-gray-100 pt-6">
-                  <h3 class="text-gray-800 font-bold text-lg mb-4">Contacto</h3>
-                  <ul class="space-y-4 text-sm text-gray-600">
+                  <h3 class="text-gray-800 font-bold text-xl mb-4">Contacto</h3>
+                  <ul class="space-y-4 text-lg text-gray-600">
                     <li v-if="business.address" class="flex items-start gap-3">
                       <MapPin :size="18" class="text-gray-400 shrink-0 mt-0.5" />
                       <span>{{ business.address }}</span>
@@ -205,7 +205,6 @@
     ShoppingBag,
   } from 'lucide-vue-next';
   import { useAuthStore } from '~/stores/auth';
-  import ProductCard from '~/components/products/ProductCard.vue';
 
   const products = ref([]);
 

@@ -8,13 +8,19 @@ const validateProfessionalProfile = [
         .notEmpty().withMessage('La profesión u oficio es obligatorio')
         .isLength({ min: 3 }).withMessage('La profesión debe ser real'),
 
-    body('hourly_rate')
+    body('fee')
         .optional()
-        .isFloat({ min: 0 }).withMessage('La tarifa por hora debe ser un número positivo'),
+        .isFloat({ min: 0 }).withMessage('La tarifa debe ser un número positivo'),
 
-    body('service_radius')
+    body('billing_type')
         .optional()
-        .isInt({ min: 1 }).withMessage('El radio de servicio debe ser al menos 1 km'),
+        .isIn(['hourly', 'daily', 'job']).withMessage('Tipo de cobro inválido'),
+
+    body('department')
+        .notEmpty().withMessage('El departamento es obligatorio'),
+
+    body('municipality')
+        .notEmpty().withMessage('El municipio es obligatorio'),
 
     body('business_name')
         .optional()

@@ -26,12 +26,16 @@
 
       <div class="w-full grid grid-cols-2 gap-2 text-xs text-gray-500 border-t pt-4 mt-auto">
         <div class="flex flex-col items-center">
-          <span class="font-bold text-gray-700">L. {{ professional.hourly_rate }}</span>
-          <span>/ hora</span>
+          <span class="font-bold text-gray-700">L. {{ professional.fee }}</span>
+          <span>{{ billingTypeLabel }}</span>
         </div>
-        <div class="flex flex-col items-center border-l">
-          <span class="font-bold text-gray-700">{{ professional.service_radius }} km</span>
-          <span>Radio</span>
+        <div class="flex flex-col items-center border-l truncate px-1">
+          <span class="font-bold text-gray-700 truncate w-full text-center" :title="professional.department">
+            {{ professional.department }}
+          </span>
+          <span class="truncate w-full text-center" :title="professional.municipality">
+            {{ professional.municipality }}
+          </span>
         </div>
       </div>
     </div>
@@ -62,4 +66,14 @@ const getImageUrl = (path) => {
   const baseUrl = config.public.apiBase.replace('/api', '');
   return `${baseUrl}/${path.replace(/\\/g, '/')}`;
 };
+
+const billingTypeLabel = computed(() => {
+    const type = props.professional.billing_type;
+    switch(type) {
+        case 'hourly': return '/ hora';
+        case 'daily': return '/ día';
+        case 'job': return 'base';
+        default: return '';
+    }
+});
 </script>

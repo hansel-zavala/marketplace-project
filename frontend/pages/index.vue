@@ -1,17 +1,16 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     
-    <div class="bg-gradient-to-br from-blue-600 to-indigo-800 text-white py-24 relative overflow-hidden">
-      <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-         <div class="absolute right-0 top-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
-         <div class="absolute left-0 bottom-0 w-72 h-72 bg-blue-300 rounded-full mix-blend-overlay filter blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
+    <div class="bg-gradient-to-br from-white to-blue-600 text-white py-24 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-full h-full opacity-60 pointer-events-none">
+         <img src="../public/images/christmas-hero.png" alt="" class="w-full h-full object-cover"></img>
       </div>
 
       <div class="container mx-auto px-4 text-center relative z-10">
         <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
           Todo lo que necesitas, <br class="hidden md:block" /> en un solo lugar.
         </h1>
-        <p class="text-xl mb-12 text-blue-100 max-w-2xl mx-auto font-light">
+        <p class="text-xl mb-12 text-white max-w-2xl mx-auto font-light">
           Desde profesionales expertos hasta los mejores productos locales. Todo al alcance de un clic.
         </p>
         
@@ -35,7 +34,7 @@
           </div>
         </form>
 
-        <div class="mt-8 flex flex-wrap justify-center gap-4 text-sm font-medium text-blue-200">
+        <div class="mt-8 flex flex-wrap justify-center gap-4 text-sm font-medium text-white">
           <span class="opacity-75">Tendencias:</span>
           <button @click="quickSearch('Electricista')" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full transition flex items-center gap-1">
             <Zap :size="14" /> Electricista

@@ -2,8 +2,8 @@
   <header class="bg-white shadow-sm sticky top-0 z-50">
     <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
       <NuxtLink to="/" class="flex items-center gap-2 text-2xl font-bold text-blue-600">
-        <Store :size="28" />
-        <span>MercaApp</span>
+        <img src="../../public/images/Logo-MA.PNG" alt="Logo" class="w-12 h-12">
+        <span>MercApp</span>
       </NuxtLink>
 
       <div class="flex-1 max-w-xl mx-8 hidden md:block">

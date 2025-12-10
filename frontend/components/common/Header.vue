@@ -61,6 +61,11 @@
             Registro
           </NuxtLink>
         </div>
+        
+        <div v-if="authStore.user" class="mr-4">
+          <NotificationBell />
+        </div>
+
         <NuxtLink to="/cart" class="relative text-gray-600 hover:text-blue-600 mr-4 transition">
             <ShoppingCart :size="24" />
             <span
@@ -78,6 +83,7 @@
 <script setup>
   import { useAuthStore } from '~/stores/auth';
   import { useCartStore } from '~/stores/cart';
+  import NotificationBell from '~/components/common/NotificationBell.vue';
   import { Store, User, LogOut, ShoppingCart, Search } from 'lucide-vue-next';
 
   const authStore = useAuthStore();

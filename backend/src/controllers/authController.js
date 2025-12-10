@@ -1,9 +1,17 @@
 // src/controllers/authController.js
 const authService = require('../services/authService');
+const notificationController = require('./notificationController');
 
 const register = async (req, res) => {
     try {
         const { user, token } = await authService.registerUser(req.body);
+
+        await notificationController.createNotification(
+            user.id,
+            'system',
+            '¡Bienvenido a MercApp!',
+            'Gracias por unirte. Completa tu perfil para empezar a explorar servicios y productos.'
+        );
 
         res.status(201).json({
             message: 'Usuario registrado exitosamente',

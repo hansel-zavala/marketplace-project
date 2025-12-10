@@ -18,7 +18,7 @@ const findByIdWithUser = async (id) => {
     return await Professional.findByPk(id, {
         include: [{
             model: User,
-            attributes: ['first_name', 'last_name', 'profile_image', 'email', 'phone', 'created_at']
+            attributes: ['id', 'first_name', 'last_name', 'profile_image', 'email', 'phone', 'created_at']
         }]
     });
 };

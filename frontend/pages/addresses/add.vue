@@ -23,12 +23,14 @@
 import AddressForm from '~/pages/addresses/AddressForm.vue';
 import { ArrowLeft } from 'lucide-vue-next';
 import { useAuthStore } from '~/stores/auth';
+import { useToastStore } from '~/stores/toast';
 
 definePageMeta({ middleware: ['auth'] });
 
 const router = useRouter();
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
+const toastStore = useToastStore();
 const loading = ref(false);
 
 const saveAddress = async (formData) => {
@@ -39,11 +41,11 @@ const saveAddress = async (formData) => {
       headers: { Authorization: `Bearer ${authStore.token}` },
       body: formData
     });
-    alert('Dirección guardada con éxito');
+    toastStore.show('Dirección guardada con éxito', 'success');
     router.push('/addresses');
   } catch (error) {
     console.error(error);
-    alert('Error al guardar: ' + (error.data?.message || error.message));
+    toastStore.show('Error al guardar: ' + (error.data?.message || error.message), 'error');
   } finally {
     loading.value = false;
   }

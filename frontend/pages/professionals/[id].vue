@@ -216,6 +216,16 @@
       </div>
     </div>
 
+    <ConfirmationModal
+      :isOpen="authConfirmationOpen"
+      title="Inicio de Sesión Requerido"
+      message="Necesitas iniciar sesión para contratar a un profesional. ¿Deseas ir al login ahora?"
+      confirmText="Ir al Login"
+      cancelText="Cancelar"
+      @confirm="handleAuthConfirm"
+      @cancel="authConfirmationOpen = false"
+    />
+
   </div>
 </template>
 
@@ -226,11 +236,14 @@ import {
   X, ChevronLeft, ChevronRight, Calendar
 } from 'lucide-vue-next';
 import { useAuthStore } from '~/stores/auth';
+import { useToastStore } from '~/stores/toast';
+import ConfirmationModal from '~/components/common/ConfirmationModal.vue';
 
 const route = useRoute();
 const router = useRouter();
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
+const toastStore = useToastStore();
 
 const loading = ref(true);
 const professional = ref(null);
@@ -242,6 +255,14 @@ const sendingRequest = ref(false);
 const lightboxOpen = ref(false);
 const currentImageIndex = ref(0);
 const currentProjectImages = ref([]);
+const modalTitle = ref('');
+const modalMessage = ref('');
+const authConfirmationOpen = ref(false);
+
+const handleAuthConfirm = () => {
+  authConfirmationOpen.value = false;
+  router.push('/login');
+};
 
 const serviceForm = reactive({
   title: '',
@@ -275,9 +296,7 @@ const prevImage = () => currentImageIndex.value = (currentImageIndex.value - 1 +
 
 const openRequestModal = () => {
   if (!authStore.token) {
-    if (confirm('Necesitas iniciar sesión para contratar a un profesional. ¿Ir al login?')) {
-      router.push('/login');
-    }
+    authConfirmationOpen.value = true;
     return;
   }
     
@@ -296,7 +315,7 @@ const sendRequest = async () => {
       }
     });
 
-    alert('¡Solicitud enviada con éxito! El profesional la revisará pronto.');
+    toastStore.show('¡Solicitud enviada con éxito! El profesional la revisará pronto.', 'success');
     requestModalOpen.value = false;
     
     serviceForm.title = '';
@@ -306,7 +325,7 @@ const sendRequest = async () => {
 
   } catch (error) {
     console.error(error);
-    alert('Error al enviar la solicitud: ' + (error.data?.message || error.message));
+    toastStore.show('Error al enviar la solicitud: ' + (error.data?.message || error.message), 'error');
   } finally {
     sendingRequest.value = false;
   }

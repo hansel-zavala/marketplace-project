@@ -29,17 +29,19 @@
 import ProductForm from '~/components/products/ProductForm.vue';
 import { ArrowLeft } from 'lucide-vue-next';
 import { useAuthStore } from '~/stores/auth';
+import { useToastStore } from '~/stores/toast';
 
 definePageMeta({ middleware: ['auth'] });
 
 const router = useRouter();
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
+const toastStore = useToastStore();
 const saving = ref(false);
 
 onMounted(() => {
   if (!authStore.user?.phone) {
-    alert('⚠️ Para vender artículos, necesitamos tu número de teléfono. Por favor agrégalo en tu perfil.');
+    toastStore.show('⚠️ Para vender artículos, necesitamos tu número de teléfono. Por favor agrégalo en tu perfil.', 'warning');
     router.push('/profile?edit=true');
   }
 });
@@ -59,12 +61,12 @@ const saveProduct = async ({ form, files }) => {
       body: formData
     });
     
-    alert('¡Artículo publicado! Ahora es visible en el Marketplace.');
+    toastStore.show('¡Artículo publicado! Ahora es visible en el Marketplace.', 'success');
     router.push('/user/products');
 
   } catch (error) {
     console.error(error);
-    alert('Error al publicar: ' + (error.data?.message || error.message));
+    toastStore.show('Error al publicar: ' + (error.data?.message || error.message), 'error');
   } finally {
     saving.value = false;
   }

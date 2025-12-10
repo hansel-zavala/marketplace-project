@@ -1,10 +1,11 @@
 // frontend/stores/cart.js
 import { defineStore, skipHydrate } from 'pinia';
+import { useToastStore } from './toast';
 
 export const useCartStore = defineStore('cart', () => {
   
   const items = ref([]);
-
+  const toastStore = useToastStore();
   
   const totalItems = computed(() => {
     return items.value.reduce((total, item) => total + item.quantity, 0);
@@ -21,10 +22,9 @@ export const useCartStore = defineStore('cart', () => {
     if (existingItem) {
       if (existingItem.quantity + quantity <= product.stock) {
         existingItem.quantity += quantity;
-        // Feedback visual (opcional)
-        alert('Cantidad actualizada en el carrito');
+        toastStore.show('Cantidad actualizada en el carrito', 'success');
       } else {
-        alert(`Solo hay ${product.stock} unidades disponibles`);
+        toastStore.show(`Solo hay ${product.stock} unidades disponibles`, 'warning');
       }
     } else {
       if (quantity <= product.stock) {
@@ -37,15 +37,16 @@ export const useCartStore = defineStore('cart', () => {
           seller_id: product.seller_id,
           quantity
         });
-        alert('Producto agregado al carrito');
+        toastStore.show('Producto agregado al carrito', 'success');
       } else {
-        alert('Stock insuficiente');
+        toastStore.show('Stock insuficiente', 'error');
       }
     }
   };
 
   const removeItem = (productId) => {
     items.value = items.value.filter(item => item.id !== productId);
+    toastStore.show('Producto eliminado del carrito', 'info');
   };
 
   const updateQuantity = (productId, newQuantity) => {
@@ -54,7 +55,7 @@ export const useCartStore = defineStore('cart', () => {
       if (newQuantity > 0 && newQuantity <= item.stock) {
         item.quantity = newQuantity;
       } else if (newQuantity > item.stock) {
-        alert(`Máximo ${item.stock} unidades`);
+        toastStore.show(`Máximo ${item.stock} unidades`, 'warning');
         item.quantity = item.stock;
       }
     }

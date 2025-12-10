@@ -1,5 +1,8 @@
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden group hover:shadow-md transition">
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden group hover:shadow-md transition relative">
+    <!-- Link Overlay: Makes entire card clickable if 'to' is provided -->
+    <NuxtLink v-if="to" :to="to" class="absolute inset-0 z-10" :aria-label="product.title"></NuxtLink>
+
     <div class="aspect-square bg-gray-100 relative overflow-hidden">
       <img 
         v-if="product.images && product.images.length > 0" 
@@ -11,16 +14,22 @@
       </div>
       
       <div class="absolute top-2 left-2">
-        <span v-if="product.stock === 0" class="bg-red-500 text-white text-xs px-2 py-1 rounded font-bold">Agotado</span>
-        <span v-else class="bg-green-500 text-white text-xs px-2 py-1 rounded font-bold">En Stock: {{ product.stock }}</span>
+        <span v-if="product.stock === 0" class="bg-red-500 text-white text-xs px-2 py-1 rounded font-bold">
+          {{ readonly ? 'No disponible' : 'Agotado' }}
+        </span>
+        <span v-else class="bg-green-500 text-white text-xs px-2 py-1 rounded font-bold">
+          {{ readonly ? 'Disponible' : `En Stock: ${product.stock}` }}
+        </span>
       </div>
     </div>
 
     <div class="p-4">
       <div class="flex justify-between items-start mb-1">
         <h3 class="font-bold text-gray-800 line-clamp-1 text-lg">{{ product.title }}</h3>
-        <div class="flex flex-col gap-2">
-          <button @click="$emit('delete', product.id)" class="text-gray-400 hover:text-red-500 transition" title="Eliminar">
+        
+        <!-- Actions: z-20 to sit above the link overlay -->
+        <div v-if="!readonly" class="flex flex-col gap-2 ml-2 relative z-20">
+          <button @click.stop="$emit('delete', product.id)" class="text-gray-400 hover:text-red-500 transition" title="Eliminar">
             <Trash2 :size="18" />
           </button>
           <NuxtLink :to="`/business/products/${product.id}`" class="text-gray-400 hover:text-blue-500 transition" title="Editar">
@@ -43,7 +52,9 @@
 import { Package, Trash2, Edit2 } from 'lucide-vue-next';
 
 const props = defineProps({
-  product: { type: Object, required: true }
+  product: { type: Object, required: true },
+  to: { type: String, default: null },
+  readonly: { type: Boolean, default: false }
 });
 
 defineEmits(['delete']);

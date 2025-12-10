@@ -137,6 +137,7 @@
 <script setup>
 import { useCartStore } from '~/stores/cart';
 import { useAuthStore } from '~/stores/auth';
+import { useToastStore } from '~/stores/toast';
 import { MapPin, CreditCard, Banknote, Plus, Loader2 } from 'lucide-vue-next';
 
 definePageMeta({ middleware: ['auth'] });
@@ -144,6 +145,7 @@ definePageMeta({ middleware: ['auth'] });
 const config = useRuntimeConfig();
 const cartStore = useCartStore();
 const authStore = useAuthStore();
+const toastStore = useToastStore();
 const router = useRouter();
 
 const addresses = ref([]);
@@ -185,8 +187,14 @@ onMounted(async () => {
 });
 
 const processOrder = async () => {
+    if (!authStore.user?.phone) {
+      toastStore.show('Para comprar, necesitamos tu número de teléfono. Por favor agrégalo en tu perfil.', 'warning');
+      return;
+    }
+    
+
     if (!selectedAddress.value) {
-        alert("Por favor selecciona una dirección de envío.");
+        toastStore.show("Por favor selecciona una dirección de envío.", 'warning');
         return;
     }
 
@@ -208,14 +216,14 @@ const processOrder = async () => {
             headers: { Authorization: `Bearer ${authStore.token}` }
         });
         
-        alert(`¡Pedido Confirmado! ID: ${response.order?.id}`);
+        toastStore.show(`¡Pedido Confirmado!`, 'success');
         
         cartStore.clearCart();
         router.push('/');
         
     } catch (error) {
         console.error(error);
-        alert('Error al procesar el pedido: ' + (error.data?.message || 'Error desconocido'));
+        toastStore.show('Error al procesar el pedido: ' + (error.data?.message || 'Error desconocido'), 'error');
     } finally {
         placingOrder.value = false;
     }

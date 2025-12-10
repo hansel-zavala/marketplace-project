@@ -85,7 +85,7 @@
           </NuxtLink>
         </div>
 
-        <div v-if="businesses?.length > 0" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        <div v-if="businesses?.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <BusinessCard 
             v-for="business in businesses.slice(0, 5)" 
             :key="business.id" 
@@ -108,11 +108,13 @@
           </NuxtLink>
         </div>
 
-        <div v-if="products?.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div v-if="products?.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <ProductCard 
             v-for="product in products.slice(0, 8)" 
             :key="product.id" 
-            :product="product" 
+            :product="product"
+            :to="`/products/${product.id}`"
+            :readonly="true"
           />
         </div>
         <div v-else class="text-center py-10 bg-white rounded-xl shadow-sm">
@@ -149,7 +151,6 @@ const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const searchQuery = ref('');
 
-// Fetch Data
 const { data: professionals, pending: pendingProfessionals } = useFetch(`${config.public.apiBase}/professionals`);
 const { data: businesses, pending: pendingBusinesses } = useFetch(`${config.public.apiBase}/businesses`);
 const { data: products, pending: pendingProducts } = useFetch(`${config.public.apiBase}/products`);

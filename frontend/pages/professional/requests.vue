@@ -47,6 +47,15 @@
         />
       </div>
 
+      <ConfirmationModal 
+        :isOpen="modalOpen"
+        :title="modalTitle"
+        :message="modalMessage"
+        confirmText="Sí, continuar"
+        @confirm="confirmUpdate"
+        @cancel="modalOpen = false"
+      />
+
     </div>
   </div>
 </template>
@@ -54,17 +63,26 @@
 <script setup>
 import { ArrowLeft, Loader2, Inbox } from 'lucide-vue-next';
 import ServiceRequestCard from '~/components/service/ServiceRequestCard.vue';
+import ConfirmationModal from '~/components/common/ConfirmationModal.vue';
 import { useAuthStore } from '~/stores/auth';
+import { useToastStore } from '~/stores/toast';
 
 definePageMeta({ middleware: ['auth'] });
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
+const toastStore = useToastStore();
 
 const fetching = ref(true);
 const updating = ref(null);
 const requests = ref([]);
 const activeTab = ref('pending');
+
+const modalOpen = ref(false);
+const selectedRequestId = ref(null);
+const targetStatus = ref('');
+const modalTitle = ref('');
+const modalMessage = ref('');
 
 const tabs = [
   { id: 'pending', label: 'Pendientes' },
@@ -96,13 +114,34 @@ const fetchRequests = async () => {
     requests.value = data;
   } catch (error) {
     console.error(error);
+    toastStore.show('Error al cargar solicitudes', 'error');
   } finally {
     fetching.value = false;
   }
 };
 
-const handleUpdateStatus = async (id, newStatus) => {
-  if (!confirm(`¿Estás seguro de cambiar el estado a "${newStatus}"?`)) return;
+const handleUpdateStatus = (id, newStatus) => {
+  selectedRequestId.value = id;
+  targetStatus.value = newStatus;
+  
+  if (newStatus === 'accepted') {
+    modalTitle.value = '¿Aceptar Trabajo?';
+    modalMessage.value = 'Al aceptar, te comprometes a realizar el servicio. El cliente será notificado.';
+  } else if (newStatus === 'rejected') {
+    modalTitle.value = '¿Rechazar Solicitud?';
+    modalMessage.value = 'Esta acción no se puede deshacer. El cliente será notificado.';
+  } else if (newStatus === 'completed') {
+     modalTitle.value = '¿Marcar como Completado?';
+     modalMessage.value = 'Confirma que has terminado el trabajo y recibido el pago.';
+  }
+  
+  modalOpen.value = true;
+};
+
+const confirmUpdate = async () => {
+  modalOpen.value = false;
+  const id = selectedRequestId.value;
+  const newStatus = targetStatus.value;
   
   updating.value = id;
   try {
@@ -115,10 +154,16 @@ const handleUpdateStatus = async (id, newStatus) => {
     const req = requests.value.find(r => r.id === id);
     if (req) req.status = newStatus;
     
-    alert('Estado actualizado correctamente');
+    // Success Toast instead of Alert
+    let successMsg = 'Estado actualizado';
+    if (newStatus === 'accepted') successMsg = 'Solicitud aceptada. ¡Éxito en el trabajo!';
+    else if (newStatus === 'rejected') successMsg = 'Solicitud rechazada';
+    else if (newStatus === 'completed') successMsg = 'Trabajo marcado como completado';
+    
+    toastStore.show(successMsg, 'success');
   } catch (error) {
     console.error(error);
-    alert('Error al actualizar estado');
+    toastStore.show('Error al actualizar estado', 'error');
   } finally {
     updating.value = null;
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'cart_screen.dart';
+import 'search_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -14,7 +15,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _pages = [
     const HomeScreen(),
-    const Center(child: Text('🔍 Aquí va el Buscador')),
+    const SearchScreen(),
     const CartScreen(),
     const Center(child: Text('👤 Aquí va el Perfil')),
 

@@ -16,4 +16,14 @@ class ProductService {
       throw e.response?.data['message'] ?? 'Error de conexión';
     }
   }
+
+  Future<Product?> getProductById(int id) async {
+    try {
+      final response = await ApiClient.dio.get('/products/$id');
+      return Product.fromJson(response.data);
+    } on DioException catch (e) {
+      print('Error fetching product detail: $e');
+      return null;
+    }
+  }
 }

@@ -1,6 +1,7 @@
 // backend/src/repositories/businessRepository.js
 const Business = require('../models/mysql/Business');
 const OrderItem = require('../models/mysql/OrderItem');
+const { Op } = require('sequelize');
 
 const create = async (data) => {
     return await Business.create(data);
@@ -33,11 +34,24 @@ const countSoldItems = async (businessId) => {
     }) || 0;
 };
 
+const search = async (query) => {
+    return await Business.findAll({
+        where: {
+            [Op.or]: [
+                { business_name: { [Op.like]: `%${query}%` } },
+                { description: { [Op.like]: `%${query}%` } }
+            ]
+        },
+        limit: 10
+    });
+};
+
 module.exports = {
     create,
     findByUserId,
     findById,
     update,
     findAll,
-    countSoldItems
+    countSoldItems,
+    search
 };

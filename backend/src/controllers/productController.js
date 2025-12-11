@@ -1,5 +1,6 @@
 // backend/src/controllers/productController.js
 const productService = require('../services/productService');
+const productRepository = require('../repositories/productRepository');
 
 const createProduct = async (req, res) => {
     try {
@@ -107,6 +108,16 @@ const getAllProducts = async (req, res) => {
     }
 };
 
+const getRecent = async (req, res) => {
+    try {
+        const products = await productRepository.findAllRecent();
+        res.json(products);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al obtener productos' });
+    }
+};
+
 module.exports = {
     createProduct,
     getMyProducts,
@@ -115,5 +126,6 @@ module.exports = {
     deleteProduct,
     getProductsByBusiness,
     getOneProduct,
-    getAllProducts
+    getAllProducts,
+    getRecent
 };

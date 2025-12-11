@@ -67,6 +67,15 @@ const findAll = async (limit = 20) => {
     });
 };
 
+const findAllRecent = async () => {
+    return await Product.findAll({
+        where: { status: 'active' },
+        include: [{ model: ProductImage, as: 'images' }],
+        order: [['created_at', 'DESC']],
+        limit: 20
+    });
+};
+
 module.exports = {
     create,
     findById,
@@ -75,5 +84,6 @@ module.exports = {
     update,
     addImages,
     search,
-    findAll
+    findAll,
+    findAllRecent
 };

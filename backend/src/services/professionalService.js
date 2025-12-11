@@ -41,11 +41,22 @@ const submitVerification = async (userUuid, identityNumber, identityImagePath) =
 const getProfile = async (userUuid) => {
     const user = await userRepository.findByUuid(userUuid);
     if (!user) throw new Error('Usuario no encontrado');
-    return await professionalRepository.findByUserId(user.id);
+    const profile = await professionalRepository.findByUserId(user.id);
+    
+    if (profile) {
+        const jobs = await professionalRepository.countCompletedJobs(profile.id);
+        profile.setDataValue('total_jobs', jobs);
+    }
+    
+    return profile;
 };
 
 const getPublicProfileById = async (id) => {
     const profile = await professionalRepository.findByIdWithUser(id);
+    if (profile) {
+        const jobs = await professionalRepository.countCompletedJobs(profile.id);
+        profile.setDataValue('total_jobs', jobs);
+    }
     return profile;
 };  
 

@@ -1,5 +1,6 @@
 const Professional = require('../models/mysql/Professional');
 const User = require('../models/mysql/User');
+const ServiceRequest = require('../models/mysql/ServiceRequest');
 const { Op } = require('sequelize');
 
 const create = async (data) => {
@@ -14,12 +15,31 @@ const update = async (professional, data) => {
     return await professional.update(data);
 };
 
+const findAll = async () => {
+    return await Professional.findAll({
+        include: [{
+            model: User,
+            attributes: ['first_name', 'last_name', 'profile_image', 'email']
+        }],
+        order: [['created_at', 'DESC']]
+    });
+};
+
 const findByIdWithUser = async (id) => {
     return await Professional.findByPk(id, {
         include: [{
             model: User,
             attributes: ['id', 'first_name', 'last_name', 'profile_image', 'email', 'phone', 'created_at']
         }]
+    });
+};
+
+const countCompletedJobs = async (professionalId) => {
+    return await ServiceRequest.count({
+        where: {
+            professional_id: professionalId,
+            status: 'completed'
+        }
     });
 };
 
@@ -38,21 +58,12 @@ const search = async (query) => {
     });
 };
 
-const findAll = async () => {
-    return await Professional.findAll({
-        include: [{
-            model: User,
-            attributes: ['first_name', 'last_name', 'profile_image', 'email']
-        }],
-        order: [['created_at', 'DESC']]
-    });
-};
-
 module.exports = { 
     create, 
     findByUserId, 
     update, 
     findByIdWithUser,
     search,
-    findAll
+    findAll,
+    countCompletedJobs
 };

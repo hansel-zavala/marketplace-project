@@ -86,7 +86,10 @@ const createReview = async (req, res) => {
         res.status(201).json({ message: '¡Gracias por tu opinión!', review });
 
     } catch (error) {
-        console.error(error);
+        console.error('Error creating review:', error); // Improved logging
+        if (error.name === 'SequelizeValidationError') {
+            return res.status(400).json({ message: error.errors.map(e => e.message).join(', ') });
+        }
         res.status(500).json({ message: 'Error al guardar reseña' });
     }
 };

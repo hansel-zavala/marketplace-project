@@ -44,11 +44,21 @@ const getMyBusiness = async (userUuid) => {
     const user = await userRepository.findByUuid(userUuid);
     if (!user) throw new Error('Usuario no encontrado');
     
-    return await businessRepository.findByUserId(user.id);
+    const business = await businessRepository.findByUserId(user.id);
+    if (business) {
+        const sold = await businessRepository.countSoldItems(business.id);
+        business.setDataValue('total_jobs', sold);
+    }
+    return business;
 };
 
 const getBusinessById = async (id) => {
-    return await businessRepository.findById(id);
+    const business = await businessRepository.findById(id);
+    if (business) {
+        const sold = await businessRepository.countSoldItems(business.id);
+        business.setDataValue('total_jobs', sold);
+    }
+    return business;
 };
 
 const getAllBusinesses = async () => {

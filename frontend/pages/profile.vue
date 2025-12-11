@@ -260,7 +260,7 @@
                 </div>
                 <div class="flex items-center gap-1">
                   <Briefcase :size="16" />
-                  <span>{{ businessProfile.total_jobs || 0 }} Productos</span>
+                  <span>{{ businessProfile.total_jobs || 0 }} productos vendidos</span>
                 </div>
                 <div class="flex items-center gap-1">
                   <MapPin :size="16" />

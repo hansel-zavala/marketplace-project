@@ -179,16 +179,44 @@
               </NuxtLink>
             </div>
             <div class="mt-12 border-t border-gray-100 pt-8">
-              <h3 class="font-bold text-gray-800 text-xl mb-6 flex items-center gap-2">
-                Opiniones de Clientes 
-                <span class="text-sm font-normal text-gray-500">({{ reviews.length }})</span>
+              <h3 class="font-bold text-gray-800 text-xl mb-6">
+                Valoraciones y reseñas del artículo
+                <router-link to="#" class="text-xs font-normal text-gray-500 underline ml-2">Más información</router-link>
               </h3>
 
-              <div v-if="reviews.length === 0" class="text-gray-500 italic">
-                Nadie ha opinado sobre este producto aún.
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Overall Score -->
+                <div class="flex flex-col items-center justify-center lg:items-start lg:border-r lg:border-gray-100 pr-4">
+                  <div class="text-6xl font-extrabold text-gray-900 leading-none mb-2">{{ averageRating }}</div>
+                  <div class="flex items-center gap-1 mb-1">
+                     <StarRating :model-value="Number(averageRating)" :read-only="true" :size="24" />
+                  </div>
+                  <p class="text-sm text-gray-500">{{ totalReviews }} valoraciones del artículo</p>
+                </div>
+
+                <!-- Rating Distribution -->
+                <div class="flex flex-col justify-center space-y-2">
+                  <div v-for="star in [5, 4, 3, 2, 1]" :key="star" class="flex items-center gap-2 text-sm">
+                    <div class="flex items-center gap-1 w-8 shrink-0">
+                      <span class="font-bold text-gray-700">★</span>
+                      <span class="font-medium text-gray-700">{{ star }}</span>
+                    </div>
+                    <div class="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
+                      <div 
+                        class="h-full bg-gray-800 rounded-full"
+                        :style="{ width: `${getPercentage(star)}%` }"
+                      ></div>
+                    </div>
+                    <span class="text-gray-400 w-8 text-right text-xs">{{ ratingDistribution[star] || 0 }}</span>
+                  </div>
+                </div>
               </div>
 
-              <div v-else class="space-y-6">
+              <div v-if="reviews.length === 0" class="text-gray-500 italic text-center py-8 border-t border-gray-100">
+                Se el primero en opinar sobre este producto.
+              </div>
+
+              <div v-else class="space-y-6 border-t border-gray-100 pt-8">
                 <div v-for="review in reviews" :key="review.id" class="bg-gray-50 p-4 rounded-xl">
                   
                   <div class="flex justify-between items-start mb-2">
@@ -196,7 +224,7 @@
                       <div class="font-bold text-gray-800 text-sm">
                         {{ review.Author?.first_name }} {{ review.Author?.last_name }}
                       </div>
-                      <span class="text-xs text-gray-400">• {{ formatDate(review.createdAt) }}</span>
+                      <span class="text-xs text-gray-400">• {{ formatDate(review.created_at) }}</span>
                     </div>
                     <StarRating :model-value="review.rating" :read-only="true" :size="14" />
                   </div>
@@ -273,4 +301,30 @@
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('es-HN', { year: 'numeric', month: 'short', day: 'numeric' });
   };
+
+  // Reviews Computed Properties
+  const totalReviews = computed(() => reviews.value.length);
+
+  const averageRating = computed(() => {
+    if (totalReviews.value === 0) return '0.0';
+    const sum = reviews.value.reduce((acc, review) => acc + review.rating, 0);
+    return (sum / totalReviews.value).toFixed(1);
+  });
+
+  const ratingDistribution = computed(() => {
+    const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    reviews.value.forEach(review => {
+      const rating = Math.round(review.rating); 
+      if (distribution[rating] !== undefined) {
+        distribution[rating]++;
+      }
+    });
+    return distribution;
+  });
+
+  const getPercentage = (star) => {
+    if (totalReviews.value === 0) return 0;
+    return ((ratingDistribution.value[star] || 0) / totalReviews.value) * 100;
+  };
+
 </script>

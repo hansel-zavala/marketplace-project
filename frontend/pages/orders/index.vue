@@ -64,11 +64,15 @@
               <p class="font-bold text-gray-700">L. {{ item.subtotal }}</p>
               <div class="flex items-start gap-4">
                 <button
+                  v-if="!reviewedItems.has(item.id)"
                   @click="openReview(item)"
                   class="text-xs text-blue-600 font-bold hover:underline ml-auto"
                 >
                   ★ Calificar
                 </button>
+                <span v-else class="text-xs text-gray-400 font-medium ml-auto flex items-center gap-1">
+                    <CheckCircle :size="12" /> Calificado
+                </span>
               </div>
             </div>
           </div>
@@ -86,7 +90,7 @@
 </template>
 
 <script setup>
-  import { ShoppingBag, Package, Loader2 } from 'lucide-vue-next';
+  import { ShoppingBag, Package, Loader2, CheckCircle } from 'lucide-vue-next';
   import { useAuthStore } from '~/stores/auth';
   import ReviewModal from '~/components/reviews/ReviewModal.vue';
 
@@ -100,33 +104,44 @@
   const selectedItemToReview = ref(null);
   const submittingReview = ref(false);
 
-  const openReview = (item) => {
-    selectedItemToReview.value = item;
-    reviewModalOpen.value = true;
-  };
+  const reviewedItems = ref(new Set());
 
-  const handleReviewSubmit = async (reviewData) => {
-    submittingReview.value = true;
-    try {
-      await $fetch(`${config.public.apiBase}/reviews`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${authStore.token}` },
-        body: {
-          entity_id: selectedItemToReview.value.product_id,
-          entity_type: 'product',
-          rating: reviewData.rating,
-          comment: reviewData.comment,
-          order_id: selectedItemToReview.value.order_id,
-        },
-      });
-      alert('¡Gracias por tu opinión!');
-      reviewModalOpen.value = false;
-    } catch (error) {
-      alert(error.data?.message || 'Error al enviar');
-    } finally {
-      submittingReview.value = false;
+const openReview = (item) => {
+  if (reviewedItems.value.has(item.id)) return;
+  selectedItemToReview.value = item;
+  reviewModalOpen.value = true;
+};
+
+const handleReviewSubmit = async (reviewData) => {
+  submittingReview.value = true;
+  try {
+    await $fetch(`${config.public.apiBase}/reviews`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${authStore.token}` },
+      body: {
+        entity_id: selectedItemToReview.value.product_id,
+        entity_type: 'product',
+        rating: reviewData.rating,
+        comment: reviewData.comment,
+        order_id: selectedItemToReview.value.order_id,
+      },
+    });
+    alert('¡Gracias por tu opinión!');
+    reviewedItems.value.add(selectedItemToReview.value.id);
+    reviewModalOpen.value = false;
+  } catch (error) {
+    if (error.statusCode === 400 || error.statusCode === 409) {
+        alert('Ya has calificado este producto anteriormente.');
+        // If it was a duplicate, mark it as reviewed anyway so the user doesn't try again
+        reviewedItems.value.add(selectedItemToReview.value.id);
+        reviewModalOpen.value = false;
+    } else {
+        alert(error.data?.message || 'Error al enviar');
     }
-  };
+  } finally {
+    submittingReview.value = false;
+  }
+};
 
   const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString('es-HN', {

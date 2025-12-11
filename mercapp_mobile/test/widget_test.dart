@@ -4,16 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mercapp_mobile/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App starts and shows Login Screen', (WidgetTester tester) async {
     await tester.pumpWidget(const MercApp());
 
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.byType(ElevatedButton), findsOneWidget);
   });
 }
